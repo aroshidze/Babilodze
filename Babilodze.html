@@ -8,12 +8,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@500;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Inter', sans-serif;
             overflow: hidden;
-            background: #0a0a0a;
+            background: #0a0f1f; /* Deep space blue */
         }
         .game-wrapper {
             display: flex;
@@ -21,220 +21,113 @@
             align-items: center;
             width: 100vw;
             height: 100vh;
-            background: radial-gradient(circle, #1e1e1e 0%, #0a0a0a 100%);
+            background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
         }
         .game-container {
             position: relative;
-            box-shadow: 0 0 80px rgba(0, 0, 0, 0.8);
-            border-radius: 1rem;
+            box-shadow: 0 0 100px rgba(0, 0, 0, 0.8), 0 0 30px rgba(76, 129, 230, 0.2);
+            border-radius: 1.5rem;
             overflow: hidden;
-            border: 1px solid #333;
-            transition: transform 0.1s ease-in-out;
+            border: 2px solid rgba(255, 255, 255, 0.1);
         }
         .pitch {
-            background-color: #27864e;
+            background-color: #1a5e3c;
             background-image: 
-                linear-gradient(to right, rgba(0,0,0,0.1) 50%, transparent 50%);
-            background-size: 150px 100%;
+                linear-gradient(rgba(255,255,255,0.04) 2px, transparent 2px),
+                linear-gradient(90deg, rgba(255,255,255,0.04) 2px, transparent 2px);
+            background-size: 80px 80px;
         }
         canvas {
             display: block;
             width: 100%;
             height: 100%;
             cursor: crosshair;
-            box-shadow: inset 0 0 100px 50px rgba(0,0,0,0.5); /* Vignette effect */
-        }
-        .screen {
-            display: none;
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: rgba(10, 10, 10, 0.6);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            color: white;
-            padding: 2rem;
-            text-align: center;
-            transition: opacity 0.3s ease;
-            opacity: 0;
-        }
-        .screen.active {
-            display: flex;
-            opacity: 1;
+            box-shadow: inset 0 0 150px 75px rgba(0,0,0,0.7);
         }
         .title-text {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 900;
+            font-family: 'Teko', sans-serif;
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            background: linear-gradient(45deg, #ef4444, #f87171);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 2px 20px rgba(239, 68, 68, 0.3);
-        }
-        .btn {
-            @apply px-8 py-3 my-2 text-sm font-semibold text-white uppercase tracking-wider rounded-lg shadow-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-opacity-50;
-            border: 1px solid #444;
-            background: #1c1c1c;
-            transform-style: preserve-3d;
-        }
-        .btn:hover {
-            background: #2a2a2a;
-            border-color: #666;
-            transform: translateY(-2px);
-        }
-        .btn:active {
-            transform: translateY(1px);
-        }
-        .btn-primary {
-            @apply bg-red-700 border-red-600 focus:ring-red-500;
-        }
-        .btn-primary:hover {
-             @apply bg-red-600 border-red-500;
-        }
-        .level-btn {
-            @apply w-16 h-16 m-2 flex items-center justify-center text-2xl font-bold rounded-lg shadow-md transition-all duration-200;
-            border: 1px solid #444;
-            background: #1c1c1c;
-        }
-        .level-btn:hover {
-             transform: translateY(-2px);
-             border-color: #666;
-        }
-        .level-btn-unlocked {
-            @apply text-white cursor-pointer hover:bg-slate-800;
-        }
-        .level-btn-completed {
-            @apply bg-red-700 text-white cursor-pointer hover:bg-red-600 border-red-600;
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
-        }
-        .level-btn-locked {
-            @apply bg-gray-800 text-gray-600 cursor-not-allowed opacity-60;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5), 0 0 20px rgba(239, 68, 68, 0.7);
         }
         #goal-celebration {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) scale(0.5);
-            font-family: 'Montserrat', sans-serif;
-            font-size: 15vw;
-            font-weight: 900;
+            font-family: 'Teko', sans-serif;
+            font-size: 18vw;
+            font-weight: 700;
             color: white;
-            -webkit-text-stroke: 2px black;
-            text-shadow: 0 0 15px #fff, 0 0 30px #ef4444, 0 0 50px #b91c1c;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            -webkit-text-stroke: 3px black;
+            text-shadow: 0 0 15px #fff, 0 0 40px #ef4444, 0 0 70px #b91c1c;
+            transition: all 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28);
             pointer-events: none;
             z-index: 100;
             opacity: 0;
         }
         #goal-celebration.active {
-            transform: translate(-50%, -50%) scale(1);
+            transform: translate(-50%, -50%) scale(1) rotate(-3deg);
             opacity: 1;
         }
-        #game-ui {
+        #particles-js {
             position: absolute;
+            width: 100%;
+            height: 100%;
             top: 0;
             left: 0;
-            width: 100%;
-            padding: 1.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            pointer-events: none;
-        }
-        #game-ui > * {
-            pointer-events: auto;
-        }
-        .ui-btn {
-             @apply px-4 py-2 text-xs font-semibold text-white uppercase tracking-wider rounded-md shadow-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 ring-offset-2 ring-offset-black;
-             background: #1c1c1c;
-             border: 1px solid #444;
-        }
-        .ui-btn:hover {
-            background: #2a2a2a;
-            border-color: #666;
-            transform: translateY(-1px);
-        }
-        #level-indicator {
-            @apply text-white text-lg font-bold bg-black bg-opacity-50 px-5 py-2 rounded-md border border-gray-700;
-        }
-        #message-box {
-            position: absolute;
-            bottom: 5%;
-            left: 50%;
-            transform: translateX(-50%) translateY(200%);
-            background-color: #ef4444;
-            color: white;
-            padding: 0.75rem 2rem;
-            border-radius: 0.5rem;
-            transition: all 0.4s ease-in-out;
-            z-index: 110;
-            font-weight: 500;
-            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);
-            border: 1px solid #f87171;
-        }
-        #message-box.show {
-            transform: translateX(-50%) translateY(0);
+            z-index: -1;
         }
     </style>
 </head>
-<body class="bg-slate-900 text-white">
+<body>
 
 <div class="game-wrapper">
-    <!-- Main Game Container -->
     <div id="game-container" class="game-container">
         <div class="pitch w-full h-full">
             <canvas id="game-canvas"></canvas>
         </div>
 
-        <!-- In-Game UI -->
-        <div id="game-ui" style="display: none;">
-            <button id="menu-btn" class="ui-btn">Menu</button>
-            <div id="level-indicator"></div>
-            <button id="reset-btn" class="ui-btn">Reset</button>
+        <div id="game-ui" class="absolute top-0 left-0 w-full p-6 flex justify-between items-center pointer-events-none" style="display: none;">
+            <button id="menu-btn" class="px-5 py-2 text-sm font-semibold text-white uppercase tracking-wider rounded-lg shadow-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 ring-offset-2 ring-offset-black bg-black/40 backdrop-blur-sm border border-white/20 hover:bg-white/20 pointer-events-auto">Menu</button>
+            <div id="level-indicator" class="text-white text-xl font-bold bg-black/40 backdrop-blur-sm px-6 py-2 rounded-lg border border-white/20" style="font-family: 'Teko', sans-serif; letter-spacing: 0.1em;"></div>
+            <button id="reset-btn" class="px-5 py-2 text-sm font-semibold text-white uppercase tracking-wider rounded-lg shadow-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 ring-offset-2 ring-offset-black bg-black/40 backdrop-blur-sm border border-white/20 hover:bg-white/20 pointer-events-auto">Reset</button>
         </div>
 
-        <!-- Goal Celebration -->
         <div id="goal-celebration">GOAL!</div>
         
-        <!-- Message Box -->
-        <div id="message-box"></div>
+        <div id="message-box" class="absolute bottom-6 left-1/2 -translate-x-1/2 translate-y-20 opacity-0 bg-red-600/80 backdrop-blur-sm text-white px-6 py-2 rounded-lg transition-all duration-400 ease-in-out font-semibold shadow-2xl border border-red-500/50 z-50"></div>
 
-        <!-- Main Menu Screen -->
-        <div id="main-menu-screen" class="screen active">
+        <!-- Screens -->
+        <div id="main-menu-screen" class="absolute top-0 left-0 w-full h-full flex-col justify-center items-center bg-blue-950/30 backdrop-blur-md text-white p-8 text-center transition-opacity duration-300 opacity-0 hidden">
+            <canvas id="particles-js"></canvas>
             <h1 class="text-8xl md:text-9xl title-text">Babilodze's</h1>
-            <h2 class="text-6xl md:text-7xl font-bold uppercase tracking-wider mb-12 text-slate-400 font-montserrat">Playbook</h2>
-            <div class="flex flex-col">
-                <button id="start-game-btn" class="btn btn-primary">Start Game</button>
-                <button id="level-select-btn" class="btn">Level Select</button>
-                <button id="how-to-play-btn" class="btn">How to Play</button>
+            <h2 class="text-6xl md:text-7xl font-bold uppercase tracking-wider mb-12 text-slate-300" style="font-family: 'Teko', sans-serif;">Playbook</h2>
+            <div class="flex flex-col space-y-4">
+                <button id="start-game-btn" class="px-12 py-4 text-lg font-bold text-white uppercase tracking-widest rounded-lg shadow-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-opacity-50 bg-red-600/80 backdrop-blur-sm border border-red-500/50 hover:bg-red-500/80 hover:shadow-red-500/40">Start Game</button>
+                <button id="level-select-btn" class="px-12 py-4 text-lg font-bold text-white uppercase tracking-widest rounded-lg shadow-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-opacity-50 bg-black/40 backdrop-blur-sm border border-white/20 hover:bg-white/20">Level Select</button>
+                <button id="how-to-play-btn" class="px-12 py-4 text-lg font-bold text-white uppercase tracking-widest rounded-lg shadow-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-opacity-50 bg-black/40 backdrop-blur-sm border border-white/20 hover:bg-white/20">How to Play</button>
             </div>
         </div>
 
-        <!-- Level Select Screen -->
-        <div id="level-select-screen" class="screen">
-            <h2 class="text-4xl font-bold mb-8 font-montserrat uppercase tracking-widest">Select Tactical Problem</h2>
-            <div id="level-grid" class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-5 gap-4">
-            </div>
-            <button class="btn mt-8" data-target="main-menu-screen">Back to Menu</button>
+        <div id="level-select-screen" class="absolute top-0 left-0 w-full h-full flex-col justify-center items-center bg-blue-950/30 backdrop-blur-md text-white p-8 text-center transition-opacity duration-300 opacity-0 hidden">
+            <h2 class="text-5xl font-bold mb-8 uppercase tracking-widest" style="font-family: 'Teko', sans-serif;">Select Tactical Problem</h2>
+            <div id="level-grid" class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-5 gap-4"></div>
+            <button class="mt-8 px-12 py-4 text-lg font-bold text-white uppercase tracking-widest rounded-lg shadow-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-opacity-50 bg-black/40 backdrop-blur-sm border border-white/20 hover:bg-white/20" data-target="main-menu-screen">Back to Menu</button>
         </div>
 
-        <!-- How to Play Screen -->
-        <div id="how-to-play-screen" class="screen">
-            <h2 class="text-4xl font-bold mb-4 font-montserrat uppercase tracking-widest">How to Play</h2>
-            <div class="max-w-2xl text-base text-left space-y-4 bg-black/30 p-8 rounded-lg border border-gray-700">
+        <div id="how-to-play-screen" class="absolute top-0 left-0 w-full h-full flex-col justify-center items-center bg-blue-950/30 backdrop-blur-md text-white p-8 text-center transition-opacity duration-300 opacity-0 hidden">
+            <h2 class="text-5xl font-bold mb-4 uppercase tracking-widest" style="font-family: 'Teko', sans-serif;">How to Play</h2>
+            <div class="max-w-2xl text-lg text-left space-y-4 bg-black/50 p-8 rounded-lg border-2 border-white/20">
                 <p>1. Your team is in <span class="text-red-400 font-bold">RED</span>. The opponent is <span class="text-blue-400 font-bold">BLUE</span>.</p>
                 <p>2. Click and drag from the player with the glowing ball to a teammate to draw a pass.</p>
                 <p>3. Chain passes together to create a tactical sequence.</p>
                 <p>4. To shoot, draw the final line from a player into the opponent's goal.</p>
                 <p>5. Release the mouse to execute the play. Avoid defenders to score.</p>
             </div>
-            <button class="btn mt-8" data-target="main-menu-screen">Got It!</button>
+            <button class="mt-8 px-12 py-4 text-lg font-bold text-white uppercase tracking-widest rounded-lg shadow-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-opacity-50 bg-black/40 backdrop-blur-sm border border-white/20 hover:bg-white/20" data-target="main-menu-screen">Got It!</button>
         </div>
     </div>
 </div>
@@ -243,7 +136,7 @@
         // Firebase Imports
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // --- Firebase Setup ---
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : { apiKey: "AIza...", authDomain: "...", projectId: "..." };
@@ -270,32 +163,25 @@
         const levelIndicator = document.getElementById('level-indicator');
         const messageBox = document.getElementById('message-box');
 
-        let gameState = 'MENU'; // MENU, PLAYING, ANIMATING, LEVEL_WON, LEVEL_LOST
+        let gameState = 'MENU';
         let currentLevel = 0;
         let completedLevels = [];
         let unlockedLevels = 1;
 
         const PLAYER_RADIUS = 18;
-        const BALL_RADIUS = 7;
+        const BALL_RADIUS = 8;
         const GOAL_WIDTH = 120;
         const GOAL_HEIGHT = 25;
 
-        let players = [];
-        let defenders = [];
-        let ball = { x: 0, y: 0, holder: null };
-        let goal = { x: 0, y: 0 };
-        let path = [];
-        let currentPath = [];
-        let animationState = null;
+        let players = [], defenders = [], ball = { x: 0, y: 0, holder: null }, goal = { x: 0, y: 0 };
+        let path = [], currentPath = [], animationState = null;
 
-        // --- Sound Engine (Tone.js) ---
         const sounds = {
             kick: new Tone.MembraneSynth({ octaves: 4, pitchDecay: 0.1, volume: -10 }).toDestination(),
             goal: new Tone.PolySynth(Tone.Synth, { envelope: { attack: 0.01, decay: 0.4, sustain: 0.1, release: 0.4 }, volume: -5 }).toDestination(),
             lose: new Tone.NoiseSynth({ noise: { type: 'brown' }, envelope: { attack: 0.01, decay: 0.15, sustain: 0 }, volume: -15 }).toDestination(),
         };
 
-        // --- Level Definitions (Re-balanced) ---
         const levels = [
             { players: [{ x: 0.5, y: 0.8 }], defenders: [], ballHolderIndex: 0 },
             { players: [{ x: 0.3, y: 0.7 }, { x: 0.7, y: 0.7 }], defenders: [{ x: 0.5, y: 0.4, range: 0.15 }], ballHolderIndex: 0 },
@@ -304,29 +190,24 @@
             { players: [{ x: 0.2, y: 0.8 }, { x: 0.8, y: 0.8 }, { x: 0.5, y: 0.4 }], defenders: [{ x: 0.55, y: 0.65, range: 0.18 }, { x: 0.2, y: 0.5, range: 0.15 }, { x: 0.8, y: 0.5, range: 0.15 }], ballHolderIndex: 0 },
             { players: [{ x: 0.3, y: 0.8 }, { x: 0.7, y: 0.8 }, { x: 0.3, y: 0.4 } ], defenders: [{ x: 0.5, y: 0.6, range: 0.18 }], ballHolderIndex: 0 },
             { players: [{ x: 0.1, y: 0.9 }, { x: 0.5, y: 0.7 }, { x: 0.9, y: 0.9 }, { x: 0.5, y: 0.3 }], defenders: [{ x: 0.3, y: 0.5, range: 0.2 }, { x: 0.7, y: 0.5, range: 0.2 }], ballHolderIndex: 0 },
-            // Level 8: The Wide Play (Guaranteed Solvable)
-            { 
-                players: [ { x: 0.5, y: 0.9 }, { x: 0.2, y: 0.5 }, { x: 0.8, y: 0.5 } ],
-                defenders: [ { x: 0.5, y: 0.6, range: 0.2 }, { x: 0.5, y: 0.2, range: 0.15 } ],
-                ballHolderIndex: 0 
-            },
+            { players: [ { x: 0.5, y: 0.9 }, { x: 0.2, y: 0.5 }, { x: 0.8, y: 0.5 } ], defenders: [ { x: 0.5, y: 0.6, range: 0.2 }, { x: 0.5, y: 0.2, range: 0.15 } ], ballHolderIndex: 0 },
             { players: [{ x: 0.2, y: 0.9 }, { x: 0.8, y: 0.9 }, { x: 0.8, y: 0.5 }], defenders: [{ x: 0.5, y: 0.7, range: 0.25 }], ballHolderIndex: 0 },
             { players: [{ x: 0.1, y: 0.8 }, { x: 0.9, y: 0.8 }, { x: 0.3, y: 0.5 }, { x: 0.7, y: 0.5 }], defenders: [{ x: 0.5, y: 0.9, range: 0.1 }, { x: 0.5, y: 0.65, range: 0.2 }, { x: 0.2, y: 0.3, range: 0.15 }, { x: 0.8, y: 0.3, range: 0.15 }], ballHolderIndex: 0 }
         ];
 
-        // --- Game Logic ---
         function showMessage(text, duration = 2000) {
             messageBox.textContent = text;
-            messageBox.classList.add('show');
+            messageBox.classList.remove('translate-y-20', 'opacity-0');
             setTimeout(() => {
-                messageBox.classList.remove('show');
+                messageBox.classList.add('translate-y-20', 'opacity-0');
             }, duration);
         }
 
         function switchScreen(screenName) {
-            Object.values(screens).forEach(s => s.classList.remove('active'));
+            Object.values(screens).forEach(s => s.classList.add('opacity-0', 'hidden'));
             if (screens[screenName]) {
-                screens[screenName].classList.add('active');
+                screens[screenName].classList.remove('hidden');
+                setTimeout(() => screens[screenName].classList.remove('opacity-0'), 50);
                 gameUI.style.display = 'none';
                 gameState = 'MENU';
             } else {
@@ -342,105 +223,51 @@
             }
             currentLevel = levelIndex;
             const levelData = levels[levelIndex];
-            
-            path = [];
-            currentPath = [];
-
-            players = levelData.players.map(p => ({
-                x: p.x * canvas.width,
-                y: p.y * canvas.height,
-                isPlayer: true
-            }));
-
-            defenders = levelData.defenders.map(d => ({
-                x: d.x * canvas.width,
-                y: d.y * canvas.height,
-                isPlayer: false,
-                range: d.range * Math.min(canvas.width, canvas.height)
-            }));
-
+            path = []; currentPath = [];
+            players = levelData.players.map(p => ({ x: p.x * canvas.width, y: p.y * canvas.height, isPlayer: true }));
+            defenders = levelData.defenders.map(d => ({ x: d.x * canvas.width, y: d.y * canvas.height, isPlayer: false, range: d.range * Math.min(canvas.width, canvas.height) }));
             ball.holder = players[levelData.ballHolderIndex];
             updateBallPosition();
-
             goal.x = canvas.width / 2;
             goal.y = GOAL_HEIGHT / 2;
-            
             gameState = 'PLAYING';
             levelIndicator.textContent = `Problem ${currentLevel + 1}`;
             draw();
         }
 
-        function updateBallPosition() {
-            if (ball.holder) {
-                ball.x = ball.holder.x;
-                ball.y = ball.holder.y;
-            }
-        }
+        function updateBallPosition() { if (ball.holder) { ball.x = ball.holder.x; ball.y = ball.holder.y; } }
 
         function resizeCanvas() {
             const container = gameContainer;
             const aspectRatio = 16 / 9;
             let newWidth = container.parentElement.clientWidth * 0.9;
             let newHeight = container.parentElement.clientHeight * 0.9;
-            
-            if (newWidth / newHeight > aspectRatio) {
-                newWidth = newHeight * aspectRatio;
-            } else {
-                newHeight = newWidth / aspectRatio;
-            }
-
-            container.style.width = `${newWidth}px`;
-            container.style.height = `${newHeight}px`;
-
-            canvas.width = 1280; // Fixed internal resolution
-            canvas.height = canvas.width / aspectRatio;
-            
-            if (gameState === 'PLAYING' || gameState === 'ANIMATING') {
-                setupLevel(currentLevel);
-            }
+            if (newWidth / newHeight > aspectRatio) newWidth = newHeight * aspectRatio; else newHeight = newWidth / aspectRatio;
+            container.style.width = `${newWidth}px`; container.style.height = `${newHeight}px`;
+            canvas.width = 1280; canvas.height = canvas.width / aspectRatio;
+            if (gameState === 'PLAYING' || gameState === 'ANIMATING') setupLevel(currentLevel);
             draw();
         }
 
-        // --- Drawing Functions ---
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            // Pitch color is handled by CSS
-            drawPitchLines();
-            drawGoal();
-            
-            if (gameState === 'PLAYING') {
-                defenders.forEach(d => drawPlayer(d, true));
-            }
-            
+            drawPitchLines(); drawGoal();
+            if (gameState === 'PLAYING') defenders.forEach(d => drawPlayer(d, true));
             defenders.forEach(d => drawPlayer(d));
             players.forEach(p => drawPlayer(p));
-            
-            if (ball.holder) {
-                drawBall();
-            }
-            
+            if (ball.holder) drawBall();
             drawPath();
         }
 
         function drawPitchLines() {
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
-            ctx.lineWidth = 5;
-
-            // Center circle
-            ctx.beginPath();
-            ctx.arc(canvas.width / 2, canvas.height, canvas.width * 0.2, Math.PI, 2 * Math.PI);
-            ctx.stroke();
-
-            // Penalty box
-            const boxWidth = canvas.width * 0.4;
-            const boxHeight = canvas.height * 0.25;
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)'; ctx.lineWidth = 4;
+            ctx.beginPath(); ctx.arc(canvas.width / 2, canvas.height, canvas.width * 0.2, Math.PI, 2 * Math.PI); ctx.stroke();
+            const boxWidth = canvas.width * 0.4, boxHeight = canvas.height * 0.25;
             ctx.strokeRect((canvas.width - boxWidth) / 2, 0, boxWidth, boxHeight);
         }
 
         function drawGoal() {
-            ctx.fillStyle = 'rgba(0,0,0,0.2)';
-            ctx.strokeStyle = '#FFF';
-            ctx.lineWidth = 4;
+            ctx.fillStyle = 'rgba(0,0,0,0.2)'; ctx.strokeStyle = '#FFF'; ctx.lineWidth = 4;
             ctx.fillRect(goal.x - GOAL_WIDTH / 2, goal.y - GOAL_HEIGHT / 2, GOAL_WIDTH, GOAL_HEIGHT);
             ctx.strokeRect(goal.x - GOAL_WIDTH / 2, goal.y - GOAL_HEIGHT / 2, GOAL_WIDTH, GOAL_HEIGHT);
         }
@@ -448,325 +275,147 @@
         function drawPlayer(p, drawRange = false) {
             ctx.save();
             if (drawRange) {
-                ctx.fillStyle = 'rgba(59, 130, 246, 0.1)';
-                ctx.strokeStyle = 'rgba(59, 130, 246, 0.3)';
-                ctx.lineWidth = 1;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.range, 0, 2 * Math.PI);
-                ctx.fill();
-                ctx.stroke();
+                const rangeGradient = ctx.createRadialGradient(p.x, p.y, 1, p.x, p.y, p.range);
+                rangeGradient.addColorStop(0, 'rgba(96, 165, 250, 0.2)');
+                rangeGradient.addColorStop(1, 'rgba(96, 165, 250, 0.0)');
+                ctx.fillStyle = rangeGradient;
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.range, 0, 2 * Math.PI); ctx.fill();
             }
-            
-            ctx.shadowColor = 'rgba(0,0,0,0.4)';
-            ctx.shadowBlur = 15;
-            ctx.shadowOffsetY = 8;
-            
+            ctx.shadowColor = 'rgba(0,0,0,0.6)'; ctx.shadowBlur = 20; ctx.shadowOffsetY = 10;
             const gradient = ctx.createRadialGradient(p.x - 5, p.y - 5, 2, p.x, p.y, PLAYER_RADIUS * 1.5);
-            if(p.isPlayer) {
-                gradient.addColorStop(0, '#f87171');
-                gradient.addColorStop(1, '#b91c1c');
-            } else {
-                gradient.addColorStop(0, '#60a5fa');
-                gradient.addColorStop(1, '#2563eb');
-            }
-
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, PLAYER_RADIUS, 0, 2 * Math.PI);
-            ctx.fillStyle = gradient;
-            ctx.fill();
-            
-            ctx.strokeStyle = 'rgba(0,0,0,0.2)';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-
+            if(p.isPlayer) { gradient.addColorStop(0, '#f87171'); gradient.addColorStop(1, '#b91c1c'); } 
+            else { gradient.addColorStop(0, '#60a5fa'); gradient.addColorStop(1, '#2563eb'); }
+            ctx.beginPath(); ctx.arc(p.x, p.y, PLAYER_RADIUS, 0, 2 * Math.PI); ctx.fillStyle = gradient; ctx.fill();
+            ctx.strokeStyle = 'rgba(0,0,0,0.4)'; ctx.lineWidth = 2; ctx.stroke();
             if (p === ball.holder && (gameState === 'PLAYING' || gameState === 'ANIMATING')) {
-                ctx.shadowColor = 'white';
-                ctx.shadowBlur = 30;
-                ctx.shadowOffsetY = 0;
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
-                ctx.lineWidth = 4;
-                ctx.stroke();
+                ctx.shadowColor = 'white'; ctx.shadowBlur = 30; ctx.shadowOffsetY = 0;
+                ctx.strokeStyle = 'rgba(255, 255, 255, 1)'; ctx.lineWidth = 4; ctx.stroke();
             }
             ctx.restore();
         }
 
         function drawBall() {
-            ctx.save();
-            ctx.shadowColor = 'rgba(0,0,0,0.5)';
-            ctx.shadowBlur = 8;
-            ctx.shadowOffsetY = 4;
-            
+            ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.6)'; ctx.shadowBlur = 10; ctx.shadowOffsetY = 5;
             const gradient = ctx.createRadialGradient(ball.x - 3, ball.y - 3, 1, ball.x, ball.y, BALL_RADIUS);
-            gradient.addColorStop(0, '#ffffff');
-            gradient.addColorStop(1, '#e0e0e0');
-
-            ctx.beginPath();
-            ctx.arc(ball.x, ball.y, BALL_RADIUS, 0, 2 * Math.PI);
-            ctx.fillStyle = gradient;
-            ctx.fill();
-            
+            gradient.addColorStop(0, '#ffffff'); gradient.addColorStop(1, '#d1d5db');
+            ctx.beginPath(); ctx.arc(ball.x, ball.y, BALL_RADIUS, 0, 2 * Math.PI); ctx.fillStyle = gradient; ctx.fill();
             ctx.restore();
         }
 
         function drawPath() {
             if (currentPath.length < 2) return;
-            ctx.beginPath();
-            ctx.moveTo(currentPath[0].x, currentPath[0].y);
-            for (let i = 1; i < currentPath.length; i++) {
-                ctx.lineTo(currentPath[i].x, currentPath[i].y);
-            }
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
-            ctx.lineWidth = 5;
-            ctx.lineCap = 'round';
-            ctx.setLineDash([10, 10]);
-            ctx.stroke();
-            ctx.setLineDash([]);
+            ctx.beginPath(); ctx.moveTo(currentPath[0].x, currentPath[0].y);
+            for (let i = 1; i < currentPath.length; i++) ctx.lineTo(currentPath[i].x, currentPath[i].y);
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)'; ctx.lineWidth = 6; ctx.lineCap = 'round';
+            ctx.setLineDash([1, 15]); ctx.stroke(); ctx.setLineDash([]);
         }
 
-        // --- Mouse/Touch Interaction ---
         let isDrawing = false;
-        
         function getCanvasPos(evt) {
             const rect = canvas.getBoundingClientRect();
             const clientX = evt.clientX || (evt.touches && evt.touches[0].clientX);
             const clientY = evt.clientY || (evt.touches && evt.touches[0].clientY);
-            return {
-                x: (clientX - rect.left) * (canvas.width / rect.width),
-                y: (clientY - rect.top) * (canvas.height / rect.height)
-            };
+            return { x: (clientX - rect.left) * (canvas.width / rect.width), y: (clientY - rect.top) * (canvas.height / rect.height) };
         }
-
         function handleStart(e) {
-            e.preventDefault();
-            if (gameState !== 'PLAYING' || !ball.holder) return;
-
-            const pos = getCanvasPos(e);
-            const dist = Math.hypot(pos.x - ball.holder.x, pos.y - ball.holder.y);
-
-            if (dist < PLAYER_RADIUS * 1.5) {
-                isDrawing = true;
-                path = [{ x: ball.holder.x, y: ball.holder.y, player: ball.holder }];
-                currentPath = [pos];
-            }
+            e.preventDefault(); if (gameState !== 'PLAYING' || !ball.holder) return;
+            const pos = getCanvasPos(e); const dist = Math.hypot(pos.x - ball.holder.x, pos.y - ball.holder.y);
+            if (dist < PLAYER_RADIUS * 1.5) { isDrawing = true; path = [{ x: ball.holder.x, y: ball.holder.y, player: ball.holder }]; currentPath = [pos]; }
         }
-
         function handleMove(e) {
-            e.preventDefault();
-            if (!isDrawing) return;
-            const pos = getCanvasPos(e);
-            currentPath = [path[path.length - 1], pos];
-
+            e.preventDefault(); if (!isDrawing) return;
+            const pos = getCanvasPos(e); currentPath = [path[path.length - 1], pos];
             for (const p of players) {
                 if (p === path[path.length - 1].player) continue;
                 const dist = Math.hypot(pos.x - p.x, pos.y - p.y);
-                if (dist < PLAYER_RADIUS * 2) {
-                    currentPath[1] = { x: p.x, y: p.y };
-                    break;
-                }
+                if (dist < PLAYER_RADIUS * 2) { currentPath[1] = { x: p.x, y: p.y }; break; }
             }
             draw();
         }
-
         function handleEnd(e) {
-            e.preventDefault();
-            if (!isDrawing) return;
-            isDrawing = false;
-            
-            const pos = getCanvasPos(e);
-            let targetFound = false;
-
+            e.preventDefault(); if (!isDrawing) return; isDrawing = false;
+            const pos = getCanvasPos(e); let targetFound = false;
             for (const p of players) {
                 if (p === path[path.length - 1].player) continue;
                 const dist = Math.hypot(pos.x - p.x, pos.y - p.y);
-                if (dist < PLAYER_RADIUS * 2.5) {
-                    path.push({ x: p.x, y: p.y, player: p });
-                    targetFound = true;
-                    isDrawing = true; 
-                    currentPath = [];
-                    draw();
-                    return;
-                }
+                if (dist < PLAYER_RADIUS * 2.5) { path.push({ x: p.x, y: p.y, player: p }); targetFound = true; isDrawing = true; currentPath = []; draw(); return; }
             }
-
             if (pos.x > goal.x - GOAL_WIDTH / 2 && pos.x < goal.x + GOAL_WIDTH / 2 && pos.y < goal.y + GOAL_HEIGHT / 2 + 50) {
-                 path.push({ x: pos.x, y: 0, player: null });
-                 targetFound = true;
+                 path.push({ x: pos.x, y: 0, player: null }); targetFound = true;
             }
-
-            if (targetFound) {
-                executePlay();
-            } else {
-                path = [];
-            }
-            currentPath = [];
-            draw();
+            if (targetFound) executePlay(); else path = [];
+            currentPath = []; draw();
         }
         
-        // --- Animation & Execution ---
         function executePlay() {
-            if (path.length < 2) return;
-            gameState = 'ANIMATING';
-            
-            animationState = {
-                pathIndex: 0,
-                progress: 0,
-                ballSpeed: 20,
-            };
-            sounds.kick.triggerAttackRelease("C2", "8n");
-            animate();
+            if (path.length < 2) return; gameState = 'ANIMATING';
+            animationState = { pathIndex: 0, progress: 0, ballSpeed: 24 };
+            sounds.kick.triggerAttackRelease("C2", "8n"); animate();
         }
-
         function animate() {
             if (gameState !== 'ANIMATING') return;
-
-            const { pathIndex, ballSpeed } = animationState;
-            const startPoint = path[pathIndex];
-            const endPoint = path[pathIndex + 1];
-
-            const dx = endPoint.x - startPoint.x;
-            const dy = endPoint.y - startPoint.y;
-            const segmentLength = Math.hypot(dx, dy);
-            const totalSteps = segmentLength / ballSpeed;
-
-            animationState.progress++;
-            const ratio = animationState.progress / totalSteps;
-
-            ball.x = startPoint.x + dx * ratio;
-            ball.y = startPoint.y + dy * ratio;
-
-            for (const d of defenders) {
-                const distToBall = Math.hypot(ball.x - d.x, ball.y - d.y);
-                if (distToBall < d.range + BALL_RADIUS) {
-                    levelLost();
-                    return;
-                }
-            }
-            
+            const { pathIndex, ballSpeed } = animationState; const startPoint = path[pathIndex], endPoint = path[pathIndex + 1];
+            const dx = endPoint.x - startPoint.x, dy = endPoint.y - startPoint.y;
+            const segmentLength = Math.hypot(dx, dy); const totalSteps = segmentLength / ballSpeed;
+            animationState.progress++; const ratio = animationState.progress / totalSteps;
+            ball.x = startPoint.x + dx * ratio; ball.y = startPoint.y + dy * ratio;
+            for (const d of defenders) { if (Math.hypot(ball.x - d.x, ball.y - d.y) < d.range + BALL_RADIUS) { levelLost(); return; } }
             if (animationState.progress >= totalSteps) {
-                animationState.progress = 0;
-                animationState.pathIndex++;
-
+                animationState.progress = 0; animationState.pathIndex++;
                 if (animationState.pathIndex >= path.length - 1) {
-                    if (endPoint.player === null) {
-                        if (ball.x > goal.x - GOAL_WIDTH / 2 && ball.x < goal.x + GOAL_WIDTH / 2) {
-                            levelWon();
-                        } else {
-                            levelLost();
-                        }
-                    } else {
-                       levelLost();
-                    }
+                    if (endPoint.player === null) { if (ball.x > goal.x - GOAL_WIDTH / 2 && ball.x < goal.x + GOAL_WIDTH / 2) levelWon(); else levelLost(); } 
+                    else levelLost();
                     return;
-                } else {
-                    ball.holder = endPoint.player;
-                    sounds.kick.triggerAttackRelease("C3", "8n", Tone.now() + 0.01);
-                }
+                } else { ball.holder = endPoint.player; sounds.kick.triggerAttackRelease("C3", "8n", Tone.now() + 0.01); }
             }
-            
-            draw();
-            requestAnimationFrame(animate);
+            draw(); requestAnimationFrame(animate);
         }
 
         function levelWon() {
-            gameState = 'LEVEL_WON';
-            sounds.goal.triggerAttackRelease(["C4", "E4", "G4", "C5"], "0.5s");
-            goalCelebration.classList.add('active');
-            gameContainer.style.transform = 'scale(1.02)';
-
-            if (!completedLevels.includes(currentLevel)) {
-                completedLevels.push(currentLevel);
-                unlockedLevels = Math.max(unlockedLevels, completedLevels.length + 1);
-                saveProgress();
-            }
-
-            setTimeout(() => {
-                goalCelebration.classList.remove('active');
-                gameContainer.style.transform = 'scale(1)';
-                setupLevel(currentLevel + 1);
-            }, 2000);
+            gameState = 'LEVEL_WON'; sounds.goal.triggerAttackRelease(["C4", "E4", "G4", "C5"], "0.5s");
+            goalCelebration.classList.add('active'); gameContainer.style.transform = 'scale(1.02)';
+            if (!completedLevels.includes(currentLevel)) { completedLevels.push(currentLevel); unlockedLevels = Math.max(unlockedLevels, completedLevels.length + 1); saveProgress(); }
+            setTimeout(() => { goalCelebration.classList.remove('active'); gameContainer.style.transform = 'scale(1)'; setupLevel(currentLevel + 1); }, 2000);
         }
-
         function levelLost() {
-            gameState = 'LEVEL_LOST';
-            sounds.lose.triggerAttackRelease("0.2s");
-            showMessage("Interception!", 2000);
-            gameContainer.style.transform = 'translateX(-2px)';
-            setTimeout(() => gameContainer.style.transform = 'translateX(2px)', 50);
-            setTimeout(() => gameContainer.style.transform = 'translateX(0)', 100);
-            
-            setTimeout(() => {
-                if(gameState === 'LEVEL_LOST') setupLevel(currentLevel);
-            }, 1500);
+            gameState = 'LEVEL_LOST'; sounds.lose.triggerAttackRelease("0.2s"); showMessage("Interception!", 2000);
+            gameContainer.style.transform = 'translateX(-3px)';
+            setTimeout(() => gameContainer.style.transform = 'translateX(3px)', 60);
+            setTimeout(() => gameContainer.style.transform = 'translateX(0)', 120);
+            setTimeout(() => { if(gameState === 'LEVEL_LOST') setupLevel(currentLevel); }, 1500);
         }
 
-        // --- UI & Screen Management ---
         function setupUI() {
             document.body.addEventListener('click', (e) => {
-                if (e.target.closest('.btn, .ui-btn, .level-btn')) {
-                    if (Tone.context.state !== 'running') {
-                        Tone.start();
-                    }
-                    const clickSynth = new Tone.Synth({
-                        oscillator: { type: 'triangle' },
-                        envelope: { attack: 0.005, decay: 0.1, sustain: 0, release: 0.1 },
-                        volume: -20
-                    }).toDestination();
+                if (e.target.closest('button')) {
+                    if (Tone.context.state !== 'running') Tone.start();
+                    const clickSynth = new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.005, decay: 0.1, sustain: 0, release: 0.1 }, volume: -20 }).toDestination();
                     clickSynth.triggerAttackRelease("C5", "0.1", Tone.now());
                     setTimeout(() => clickSynth.dispose(), 200);
                 }
             });
-
-            document.getElementById('start-game-btn').addEventListener('click', () => {
-                switchScreen(null);
-                setupLevel(completedLevels.length);
-            });
-            document.getElementById('level-select-btn').addEventListener('click', () => {
-                updateLevelSelectScreen();
-                switchScreen('levelSelect');
-            });
+            document.getElementById('start-game-btn').addEventListener('click', () => { switchScreen(null); setupLevel(completedLevels.length); });
+            document.getElementById('level-select-btn').addEventListener('click', () => { updateLevelSelectScreen(); switchScreen('levelSelect'); });
             document.getElementById('how-to-play-btn').addEventListener('click', () => switchScreen('howToPlay'));
-
-            document.querySelectorAll('[data-target]').forEach(btn => {
-                btn.addEventListener('click', () => switchScreen(btn.dataset.target));
-            });
-            
-            document.getElementById('menu-btn').addEventListener('click', () => {
-                switchScreen('mainMenu');
-            });
-            
-            document.getElementById('reset-btn').addEventListener('click', () => {
-                if(gameState === 'PLAYING' || gameState === 'LEVEL_LOST') {
-                    setupLevel(currentLevel);
-                }
-            });
+            document.querySelectorAll('[data-target]').forEach(btn => btn.addEventListener('click', () => switchScreen(btn.dataset.target)));
+            document.getElementById('menu-btn').addEventListener('click', () => switchScreen('mainMenu'));
+            document.getElementById('reset-btn').addEventListener('click', () => { if(gameState === 'PLAYING' || gameState === 'LEVEL_LOST') setupLevel(currentLevel); });
         }
         
         function updateLevelSelectScreen() {
-            const grid = document.getElementById('level-grid');
-            grid.innerHTML = '';
+            const grid = document.getElementById('level-grid'); grid.innerHTML = '';
             levels.forEach((_, i) => {
-                const btn = document.createElement('button');
-                btn.textContent = i + 1;
-                btn.classList.add('level-btn');
-                if (completedLevels.includes(i)) {
-                    btn.classList.add('level-btn-completed');
-                } else if (i < unlockedLevels) {
-                    btn.classList.add('level-btn-unlocked');
-                } else {
-                    btn.classList.add('level-btn-locked');
-                }
-
-                if (i < unlockedLevels) {
-                    btn.addEventListener('click', () => {
-                        switchScreen(null);
-                        setupLevel(i);
-                    });
-                }
+                const btn = document.createElement('button'); btn.textContent = i + 1;
+                let btnClass = 'w-16 h-16 m-2 flex items-center justify-center text-2xl font-bold rounded-lg shadow-md transition-all duration-200 border border-gray-700 ';
+                if (completedLevels.includes(i)) btnClass += 'bg-red-700/80 text-white cursor-pointer hover:bg-red-600/80 border-red-600/50 shadow-red-500/30';
+                else if (i < unlockedLevels) btnClass += 'bg-black/40 text-white cursor-pointer hover:bg-white/20';
+                else btnClass += 'bg-gray-800/50 text-gray-600 cursor-not-allowed opacity-60';
+                btn.className = btnClass;
+                if (i < unlockedLevels) btn.addEventListener('click', () => { switchScreen(null); setupLevel(i); });
                 grid.appendChild(btn);
             });
         }
 
-        // --- Firestore Persistence ---
         async function authUser() {
             onAuthStateChanged(auth, async (user) => {
                 if (user) {
@@ -775,72 +424,100 @@
                     await loadProgress();
                 } else {
                     try {
-                        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                            await signInWithCustomToken(auth, __initial_auth_token);
-                        } else {
-                            await signInAnonymously(auth);
-                        }
+                        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) await signInWithCustomToken(auth, __initial_auth_token);
+                        else await signInAnonymously(auth);
                     } catch (error) {
                         console.error("Sign-in failed, using local fallback:", error);
-                        userId = 'local-user-' + (localStorage.getItem('babilodzes_playbook_uuid') || crypto.randomUUID());
-                        localStorage.setItem('babilodzes_playbook_uuid', userId);
+                        const uuid = localStorage.getItem('babilodzes_playbook_uuid') || crypto.randomUUID();
+                        localStorage.setItem('babilodzes_playbook_uuid', uuid);
+                        userId = 'local-user-' + uuid;
                         await loadProgress();
                     }
                 }
                 setupUI();
                 resizeCanvas();
+                switchScreen('mainMenu'); // Start at main menu
             });
         }
 
         async function loadProgress() {
             if (userId.startsWith('local-user')) {
                 const localData = localStorage.getItem('babilodzes_playbook_progress');
-                if(localData) {
-                    const data = JSON.parse(localData);
-                    completedLevels = data.completedLevels || [];
-                    unlockedLevels = data.unlockedLevels || 1;
-                }
-                return;
+                if(localData) { const data = JSON.parse(localData); completedLevels = data.completedLevels || []; unlockedLevels = data.unlockedLevels || 1; } return;
             }
             if (!userProgressDocRef) return;
-
             try {
                 const docSnap = await getDoc(userProgressDocRef);
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    completedLevels = data.completedLevels || [];
-                    unlockedLevels = Math.max(1, data.unlockedLevels || 1);
-                } else {
-                    await setDoc(userProgressDocRef, { completedLevels: [], unlockedLevels: 1 });
-                }
-            } catch (error) {
-                console.error("Error loading progress:", error);
-            }
+                if (docSnap.exists()) { const data = docSnap.data(); completedLevels = data.completedLevels || []; unlockedLevels = Math.max(1, data.unlockedLevels || 1); } 
+                else await setDoc(userProgressDocRef, { completedLevels: [], unlockedLevels: 1 });
+            } catch (error) { console.error("Error loading progress:", error); }
         }
 
         async function saveProgress() {
-             if (userId.startsWith('local-user')) {
-                const progress = { completedLevels, unlockedLevels };
-                localStorage.setItem('babilodzes_playbook_progress', JSON.stringify(progress));
-                return;
-            }
+             if (userId.startsWith('local-user')) { localStorage.setItem('babilodzes_playbook_progress', JSON.stringify({ completedLevels, unlockedLevels })); return; }
             if (!userProgressDocRef) return;
-
-            try {
-                await setDoc(userProgressDocRef, { completedLevels, unlockedLevels });
-            } catch (error) {
-                console.error("Error saving progress:", error);
-            }
+            try { await setDoc(userProgressDocRef, { completedLevels, unlockedLevels }); } catch (error) { console.error("Error saving progress:", error); }
         }
 
-        // --- Initialization ---
-        window.addEventListener('resize', resizeCanvas);
-        canvas.addEventListener('mousedown', handleStart);
-        canvas.addEventListener('mousemove', handleMove);
-        window.addEventListener('mouseup', handleEnd);
+        // Particle effect for main menu
+        const particlesCanvas = document.getElementById('particles-js');
+        const p_ctx = particlesCanvas.getContext('2d');
+        let particlesArray;
 
-        canvas.addEventListener('touchstart', handleStart, { passive: false });
-        canvas.addEventListener('touchmove', handleMove, { passive: false });
+        function resizeParticles() {
+            particlesCanvas.width = particlesCanvas.parentElement.clientWidth;
+            particlesCanvas.height = particlesCanvas.parentElement.clientHeight;
+        }
+        
+        class Particle {
+            constructor(x, y, directionX, directionY, size, color) {
+                this.x = x; this.y = y; this.directionX = directionX; this.directionY = directionY;
+                this.size = size; this.color = color;
+            }
+            draw() { p_ctx.beginPath(); p_ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false); p_ctx.fillStyle = this.color; p_ctx.fill(); }
+            update() {
+                if (this.x > particlesCanvas.width || this.x < 0) this.directionX = -this.directionX;
+                if (this.y > particlesCanvas.height || this.y < 0) this.directionY = -this.directionY;
+                this.x += this.directionX; this.y += this.directionY;
+                this.draw();
+            }
+        }
+        function initParticles() {
+            resizeParticles();
+            particlesArray = [];
+            let numberOfParticles = (particlesCanvas.height * particlesCanvas.width) / 9000;
+            for (let i = 0; i < numberOfParticles; i++) {
+                let size = (Math.random() * 2) + 1;
+                let x = (Math.random() * ((innerWidth - size * 2) - (size * 2)) + size * 2);
+                let y = (Math.random() * ((innerHeight - size * 2) - (size * 2)) + size * 2);
+                let directionX = (Math.random() * .4) - .2;
+                let directionY = (Math.random() * .4) - .2;
+                let color = 'rgba(255, 77, 77, 0.3)';
+                particlesArray.push(new Particle(x, y, directionX, directionY, size, color));
+            }
+        }
+        function animateParticles() {
+            if(gameState !== 'MENU') return;
+            requestAnimationFrame(animateParticles);
+            p_ctx.clearRect(0,0,innerWidth, innerHeight);
+            for (let i = 0; i < particlesArray.length; i++) particlesArray[i].update();
+        }
+        
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            if (gameState === 'MENU') {
+                initParticles();
+            }
+        });
+        
+        initParticles();
+        animateParticles();
+
+        window.addEventListener('mousedown', handleStart);
+        window.addEventListener('mousemove', handleMove);
+        window.addEventListener('mouseup', handleEnd);
+        window.addEventListener('touchstart', handleStart, { passive: false });
+        window.addEventListener('touchmove', handleMove, { passive: false });
         window.addEventListener('touchend', handleEnd, { passive: false });
 
         authUser();

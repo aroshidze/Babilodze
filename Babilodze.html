@@ -6,24 +6,43 @@
     <title>Babilodze's Playbook</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Roboto', sans-serif;
             overflow: hidden;
-            background-color: #1a202c; /* Dark background for the whole page */
+            background: #0a0a0a;
+        }
+        .game-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle, #1e1e1e 0%, #0a0a0a 100%);
         }
         .game-container {
-            background-image:
-                linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)),
-                url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="p" width="100" height="100" patternUnits="userSpaceOnUse"><path d="M0 50h100M50 0v100" stroke="%2338a169" stroke-width="2" /></pattern></defs><rect width="100%" height="100%" fill="url(%23p)"/></svg>');
-            background-color: #48bb78; /* Green pitch color */
+            position: relative;
+            box-shadow: 0 0 80px rgba(0, 0, 0, 0.8);
+            border-radius: 1rem;
+            overflow: hidden;
+            border: 1px solid #333;
+            transition: transform 0.1s ease-in-out;
+        }
+        .pitch {
+            background-color: #27864e;
+            background-image: 
+                linear-gradient(to right, rgba(0,0,0,0.1) 50%, transparent 50%);
+            background-size: 150px 100%;
         }
         canvas {
             display: block;
             width: 100%;
             height: 100%;
             cursor: crosshair;
+            box-shadow: inset 0 0 100px 50px rgba(0,0,0,0.5); /* Vignette effect */
         }
         .screen {
             display: none;
@@ -35,58 +54,94 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background-color: rgba(26, 32, 44, 0.95);
+            background: rgba(10, 10, 10, 0.6);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             color: white;
             padding: 2rem;
             text-align: center;
+            transition: opacity 0.3s ease;
+            opacity: 0;
         }
         .screen.active {
             display: flex;
+            opacity: 1;
+        }
+        .title-text {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            background: linear-gradient(45deg, #ef4444, #f87171);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 20px rgba(239, 68, 68, 0.3);
         }
         .btn {
-            @apply px-6 py-3 my-2 text-lg font-bold text-white uppercase tracking-wider rounded-lg shadow-lg transition-transform transform hover:scale-105 focus:outline-none;
+            @apply px-8 py-3 my-2 text-sm font-semibold text-white uppercase tracking-wider rounded-lg shadow-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-4 focus:ring-opacity-50;
+            border: 1px solid #444;
+            background: #1c1c1c;
+            transform-style: preserve-3d;
+        }
+        .btn:hover {
+            background: #2a2a2a;
+            border-color: #666;
+            transform: translateY(-2px);
+        }
+        .btn:active {
+            transform: translateY(1px);
         }
         .btn-primary {
-            background: linear-gradient(45deg, #e53e3e, #c53030);
+            @apply bg-red-700 border-red-600 focus:ring-red-500;
         }
-        .btn-secondary {
-            background: linear-gradient(45deg, #4a5568, #2d3748);
+        .btn-primary:hover {
+             @apply bg-red-600 border-red-500;
         }
         .level-btn {
-            @apply w-16 h-16 m-2 flex items-center justify-center text-2xl font-bold rounded-lg shadow-md transition-all duration-300;
+            @apply w-16 h-16 m-2 flex items-center justify-center text-2xl font-bold rounded-lg shadow-md transition-all duration-200;
+            border: 1px solid #444;
+            background: #1c1c1c;
+        }
+        .level-btn:hover {
+             transform: translateY(-2px);
+             border-color: #666;
         }
         .level-btn-unlocked {
-            @apply bg-gray-600 text-white cursor-pointer hover:bg-gray-500;
+            @apply text-white cursor-pointer hover:bg-slate-800;
         }
         .level-btn-completed {
-            @apply bg-red-600 text-white cursor-pointer hover:bg-red-500;
-            box-shadow: 0 0 15px rgba(229, 62, 62, 0.7);
+            @apply bg-red-700 text-white cursor-pointer hover:bg-red-600 border-red-600;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
         }
         .level-btn-locked {
-            @apply bg-gray-800 text-gray-500 cursor-not-allowed;
+            @apply bg-gray-800 text-gray-600 cursor-not-allowed opacity-60;
         }
         #goal-celebration {
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%) scale(0);
-            font-size: 10vw;
+            transform: translate(-50%, -50%) scale(0.5);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 15vw;
             font-weight: 900;
             color: white;
-            text-shadow: 0 0 10px #f56565, 0 0 20px #f56565, 0 0 30px #c53030;
-            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            -webkit-text-stroke: 2px black;
+            text-shadow: 0 0 15px #fff, 0 0 30px #ef4444, 0 0 50px #b91c1c;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             pointer-events: none;
             z-index: 100;
+            opacity: 0;
         }
         #goal-celebration.active {
             transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
         }
         #game-ui {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            padding: 1rem;
+            padding: 1.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -95,41 +150,53 @@
         #game-ui > * {
             pointer-events: auto;
         }
-        .coach-silhouette {
-            width: 100px;
-            height: auto;
-            fill: white;
-            opacity: 0.8;
+        .ui-btn {
+             @apply px-4 py-2 text-xs font-semibold text-white uppercase tracking-wider rounded-md shadow-lg transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 ring-offset-2 ring-offset-black;
+             background: #1c1c1c;
+             border: 1px solid #444;
+        }
+        .ui-btn:hover {
+            background: #2a2a2a;
+            border-color: #666;
+            transform: translateY(-1px);
+        }
+        #level-indicator {
+            @apply text-white text-lg font-bold bg-black bg-opacity-50 px-5 py-2 rounded-md border border-gray-700;
         }
         #message-box {
             position: absolute;
             bottom: 5%;
             left: 50%;
             transform: translateX(-50%) translateY(200%);
-            background-color: rgba(0,0,0,0.7);
+            background-color: #ef4444;
             color: white;
-            padding: 1rem 2rem;
+            padding: 0.75rem 2rem;
             border-radius: 0.5rem;
-            transition: transform 0.4s ease-in-out;
+            transition: all 0.4s ease-in-out;
             z-index: 110;
-            font-weight: 600;
+            font-weight: 500;
+            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);
+            border: 1px solid #f87171;
         }
         #message-box.show {
             transform: translateX(-50%) translateY(0);
         }
     </style>
 </head>
-<body class="bg-gray-900 text-white">
+<body class="bg-slate-900 text-white">
 
+<div class="game-wrapper">
     <!-- Main Game Container -->
-    <div id="game-container" class="game-container w-screen h-screen relative">
-        <canvas id="game-canvas"></canvas>
+    <div id="game-container" class="game-container">
+        <div class="pitch w-full h-full">
+            <canvas id="game-canvas"></canvas>
+        </div>
 
         <!-- In-Game UI -->
-        <div id="game-ui">
-            <button id="menu-btn" class="btn btn-secondary text-sm px-4 py-2">Menu</button>
-            <div id="level-indicator" class="text-white text-2xl font-bold bg-black bg-opacity-50 px-4 py-2 rounded-lg"></div>
-            <button id="reset-btn" class="btn btn-secondary text-sm px-4 py-2">Reset</button>
+        <div id="game-ui" style="display: none;">
+            <button id="menu-btn" class="ui-btn">Menu</button>
+            <div id="level-indicator"></div>
+            <button id="reset-btn" class="ui-btn">Reset</button>
         </div>
 
         <!-- Goal Celebration -->
@@ -137,42 +204,40 @@
         
         <!-- Message Box -->
         <div id="message-box"></div>
-    </div>
 
-    <!-- Main Menu Screen -->
-    <div id="main-menu-screen" class="screen active">
-        <svg class="coach-silhouette mb-4" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C9.24 2 7 4.24 7 7s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zm0 9c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3zm0 3c-2.67 0-8 1.34-8 4v3h16v-3c0-2.66-5.33-4-8-4zm0 1.9c2.97 0 6.1 1.46 6.1 2.1H5.9c0-.64 3.13-2.1 6.1-2.1z"/></svg>
-        <h1 class="text-5xl md:text-7xl font-black uppercase tracking-widest text-red-500" style="text-shadow: 2px 2px 0 #fff, 4px 4px 0 #000;">Babilodze's</h1>
-        <h2 class="text-4xl md:text-6xl font-bold uppercase tracking-wider mb-8">Playbook</h2>
-        <button id="start-game-btn" class="btn btn-primary">Start Game</button>
-        <button id="level-select-btn" class="btn btn-primary">Level Select</button>
-        <button id="how-to-play-btn" class="btn btn-secondary">How to Play</button>
-    </div>
-
-    <!-- Level Select Screen -->
-    <div id="level-select-screen" class="screen">
-        <h2 class="text-4xl font-bold mb-8">Select a Tactical Problem</h2>
-        <div id="level-grid" class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-4">
-            <!-- Level buttons will be generated here -->
+        <!-- Main Menu Screen -->
+        <div id="main-menu-screen" class="screen active">
+            <h1 class="text-8xl md:text-9xl title-text">Babilodze's</h1>
+            <h2 class="text-6xl md:text-7xl font-bold uppercase tracking-wider mb-12 text-slate-400 font-montserrat">Playbook</h2>
+            <div class="flex flex-col">
+                <button id="start-game-btn" class="btn btn-primary">Start Game</button>
+                <button id="level-select-btn" class="btn">Level Select</button>
+                <button id="how-to-play-btn" class="btn">How to Play</button>
+            </div>
         </div>
-        <button class="btn btn-secondary mt-8" data-target="main-menu-screen">Back to Menu</button>
-    </div>
 
-    <!-- How to Play Screen -->
-    <div id="how-to-play-screen" class="screen">
-        <h2 class="text-4xl font-bold mb-4">How to Play</h2>
-        <div class="max-w-2xl text-lg text-left space-y-4">
-            <p>1. You are Coach Babilodze. Your team is in <span class="text-red-500 font-bold">RED</span>.</p>
-            <p>2. One of your players starts with the ball (indicated by a white glow).</p>
-            <p>3. Click and drag from the player with the ball to a teammate to draw a pass.</p>
-            <p>4. Continue drawing lines from teammate to teammate to create a passing sequence.</p>
-            <p>5. To shoot, draw the final line from a player into the opponent's goal.</p>
-            <p>6. Release the mouse button to execute the play.</p>
-            <p>7. Avoid the opponent defenders in <span class="text-blue-400 font-bold">BLUE</span>. If they intercept a pass or block a shot, you lose.</p>
-            <p>8. Score a goal to complete the level and unlock the next tactical problem!</p>
+        <!-- Level Select Screen -->
+        <div id="level-select-screen" class="screen">
+            <h2 class="text-4xl font-bold mb-8 font-montserrat uppercase tracking-widest">Select Tactical Problem</h2>
+            <div id="level-grid" class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-5 gap-4">
+            </div>
+            <button class="btn mt-8" data-target="main-menu-screen">Back to Menu</button>
         </div>
-        <button class="btn btn-secondary mt-8" data-target="main-menu-screen">Got It!</button>
+
+        <!-- How to Play Screen -->
+        <div id="how-to-play-screen" class="screen">
+            <h2 class="text-4xl font-bold mb-4 font-montserrat uppercase tracking-widest">How to Play</h2>
+            <div class="max-w-2xl text-base text-left space-y-4 bg-black/30 p-8 rounded-lg border border-gray-700">
+                <p>1. Your team is in <span class="text-red-400 font-bold">RED</span>. The opponent is <span class="text-blue-400 font-bold">BLUE</span>.</p>
+                <p>2. Click and drag from the player with the glowing ball to a teammate to draw a pass.</p>
+                <p>3. Chain passes together to create a tactical sequence.</p>
+                <p>4. To shoot, draw the final line from a player into the opponent's goal.</p>
+                <p>5. Release the mouse to execute the play. Avoid defenders to score.</p>
+            </div>
+            <button class="btn mt-8" data-target="main-menu-screen">Got It!</button>
+        </div>
     </div>
+</div>
 
     <script type="module">
         // Firebase Imports
@@ -192,6 +257,7 @@
         let userProgressDocRef = null;
         
         // --- Game State & Constants ---
+        const gameContainer = document.getElementById('game-container');
         const canvas = document.getElementById('game-canvas');
         const ctx = canvas.getContext('2d');
         const screens = {
@@ -209,12 +275,11 @@
         let completedLevels = [];
         let unlockedLevels = 1;
 
-        const PLAYER_RADIUS = 15;
-        const BALL_RADIUS = 8;
-        const GOAL_WIDTH = 100;
-        const GOAL_HEIGHT = 20;
+        const PLAYER_RADIUS = 18;
+        const BALL_RADIUS = 7;
+        const GOAL_WIDTH = 120;
+        const GOAL_HEIGHT = 25;
 
-        let scale = 1;
         let players = [];
         let defenders = [];
         let ball = { x: 0, y: 0, holder: null };
@@ -226,74 +291,27 @@
         // --- Sound Engine (Tone.js) ---
         const sounds = {
             kick: new Tone.MembraneSynth({ octaves: 4, pitchDecay: 0.1, volume: -10 }).toDestination(),
-            goal: new Tone.PolySynth(Tone.Synth, { envelope: { attack: 0.01, decay: 0.2, sustain: 0.1, release: 0.2 }, volume: -5 }).toDestination(),
-            win: new Tone.Synth({ oscillator: { type: 'sine' }, envelope: { attack: 0.05, decay: 0.2, sustain: 0, release: 0.1 }, volume: -8 }).toDestination(),
-            lose: new Tone.NoiseSynth({ noise: { type: 'pink' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0 }, volume: -15 }).toDestination(),
-            uiClick: new Tone.Synth({ oscillator: { type: 'triangle' }, envelope: { attack: 0.01, decay: 0.1, sustain: 0 }, volume: -20 }).toDestination(),
+            goal: new Tone.PolySynth(Tone.Synth, { envelope: { attack: 0.01, decay: 0.4, sustain: 0.1, release: 0.4 }, volume: -5 }).toDestination(),
+            lose: new Tone.NoiseSynth({ noise: { type: 'brown' }, envelope: { attack: 0.01, decay: 0.15, sustain: 0 }, volume: -15 }).toDestination(),
         };
 
-        // --- Level Definitions ---
+        // --- Level Definitions (Re-balanced) ---
         const levels = [
-            // Level 1: Simple pass and shoot
-            {
-                players: [{ x: 0.5, y: 0.8 }],
-                defenders: [],
-                ballHolderIndex: 0
+            { players: [{ x: 0.5, y: 0.8 }], defenders: [], ballHolderIndex: 0 },
+            { players: [{ x: 0.3, y: 0.7 }, { x: 0.7, y: 0.7 }], defenders: [{ x: 0.5, y: 0.4, range: 0.15 }], ballHolderIndex: 0 },
+            { players: [{ x: 0.2, y: 0.8 }, { x: 0.8, y: 0.6 }], defenders: [{ x: 0.5, y: 0.4, range: 0.2 }], ballHolderIndex: 0 },
+            { players: [{ x: 0.5, y: 0.9 }, { x: 0.3, y: 0.5 }, { x: 0.7, y: 0.5 }], defenders: [{ x: 0.4, y: 0.65, range: 0.1 }, { x: 0.6, y: 0.65, range: 0.1 }], ballHolderIndex: 0 },
+            { players: [{ x: 0.2, y: 0.8 }, { x: 0.8, y: 0.8 }, { x: 0.5, y: 0.4 }], defenders: [{ x: 0.55, y: 0.65, range: 0.18 }, { x: 0.2, y: 0.5, range: 0.15 }, { x: 0.8, y: 0.5, range: 0.15 }], ballHolderIndex: 0 },
+            { players: [{ x: 0.3, y: 0.8 }, { x: 0.7, y: 0.8 }, { x: 0.3, y: 0.4 } ], defenders: [{ x: 0.5, y: 0.6, range: 0.18 }], ballHolderIndex: 0 },
+            { players: [{ x: 0.1, y: 0.9 }, { x: 0.5, y: 0.7 }, { x: 0.9, y: 0.9 }, { x: 0.5, y: 0.3 }], defenders: [{ x: 0.3, y: 0.5, range: 0.2 }, { x: 0.7, y: 0.5, range: 0.2 }], ballHolderIndex: 0 },
+            // Level 8: The Wide Play (Guaranteed Solvable)
+            { 
+                players: [ { x: 0.5, y: 0.9 }, { x: 0.2, y: 0.5 }, { x: 0.8, y: 0.5 } ],
+                defenders: [ { x: 0.5, y: 0.6, range: 0.2 }, { x: 0.5, y: 0.2, range: 0.15 } ],
+                ballHolderIndex: 0 
             },
-            // Level 2: One defender to avoid
-            {
-                players: [{ x: 0.3, y: 0.7 }, { x: 0.7, y: 0.7 }],
-                defenders: [{ x: 0.5, y: 0.4, range: 0.15 }],
-                ballHolderIndex: 0
-            },
-            // Level 3: A simple pass is required
-            {
-                players: [{ x: 0.2, y: 0.8 }, { x: 0.8, y: 0.6 }],
-                defenders: [{ x: 0.5, y: 0.4, range: 0.2 }],
-                ballHolderIndex: 0
-            },
-            // Level 4: Two defenders, requires a through ball
-            {
-                players: [{ x: 0.5, y: 0.9 }, { x: 0.3, y: 0.5 }, { x: 0.7, y: 0.5 }],
-                defenders: [{ x: 0.4, y: 0.65, range: 0.12 }, { x: 0.6, y: 0.65, range: 0.12 }],
-                ballHolderIndex: 0
-            },
-            // Level 5: More complex passing lane
-            {
-                players: [{ x: 0.2, y: 0.8 }, { x: 0.8, y: 0.8 }, { x: 0.5, y: 0.4 }],
-                defenders: [{ x: 0.5, y: 0.65, range: 0.2 }, { x: 0.2, y: 0.5, range: 0.15 }, { x: 0.8, y: 0.5, range: 0.15 }],
-                ballHolderIndex: 0
-            },
-            // Level 6: Wall pass
-            {
-                players: [{ x: 0.3, y: 0.8 }, { x: 0.7, y: 0.8 }, { x: 0.3, y: 0.4 } ],
-                defenders: [{ x: 0.5, y: 0.6, range: 0.25 }],
-                ballHolderIndex: 0
-            },
-            // Level 7: Three passes needed
-            {
-                players: [{ x: 0.1, y: 0.9 }, { x: 0.5, y: 0.7 }, { x: 0.9, y: 0.9 }, { x: 0.5, y: 0.3 }],
-                defenders: [{ x: 0.3, y: 0.5, range: 0.2 }, { x: 0.7, y: 0.5, range: 0.2 }],
-                ballHolderIndex: 0
-            },
-            // Level 8: Tight space
-            {
-                players: [{ x: 0.5, y: 0.9 }, { x: 0.2, y: 0.6 }, { x: 0.8, y: 0.6 }],
-                defenders: [{ x: 0.5, y: 0.7, range: 0.15 }, { x: 0.35, y: 0.4, range: 0.15 }, { x: 0.65, y: 0.4, range: 0.15 }],
-                ballHolderIndex: 0
-            },
-            // Level 9: Lure and switch
-            {
-                players: [{ x: 0.2, y: 0.9 }, { x: 0.2, y: 0.5 }, { x: 0.8, y: 0.7 }],
-                defenders: [{ x: 0.4, y: 0.7, range: 0.2 }, { x: 0.6, y: 0.4, range: 0.3 }],
-                ballHolderIndex: 0
-            },
-            // Level 10: The Masterclass
-            {
-                players: [{ x: 0.1, y: 0.8 }, { x: 0.9, y: 0.8 }, { x: 0.3, y: 0.5 }, { x: 0.7, y: 0.5 }],
-                defenders: [{ x: 0.5, y: 0.9, range: 0.1 }, { x: 0.5, y: 0.65, range: 0.25 }, { x: 0.2, y: 0.3, range: 0.15 }, { x: 0.8, y: 0.3, range: 0.15 }],
-                ballHolderIndex: 0
-            }
+            { players: [{ x: 0.2, y: 0.9 }, { x: 0.8, y: 0.9 }, { x: 0.8, y: 0.5 }], defenders: [{ x: 0.5, y: 0.7, range: 0.25 }], ballHolderIndex: 0 },
+            { players: [{ x: 0.1, y: 0.8 }, { x: 0.9, y: 0.8 }, { x: 0.3, y: 0.5 }, { x: 0.7, y: 0.5 }], defenders: [{ x: 0.5, y: 0.9, range: 0.1 }, { x: 0.5, y: 0.65, range: 0.2 }, { x: 0.2, y: 0.3, range: 0.15 }, { x: 0.8, y: 0.3, range: 0.15 }], ballHolderIndex: 0 }
         ];
 
         // --- Game Logic ---
@@ -309,9 +327,11 @@
             Object.values(screens).forEach(s => s.classList.remove('active'));
             if (screens[screenName]) {
                 screens[screenName].classList.add('active');
+                gameUI.style.display = 'none';
+                gameState = 'MENU';
+            } else {
+                gameUI.style.display = 'flex';
             }
-            gameState = 'MENU';
-            gameUI.style.display = 'none';
         }
 
         function setupLevel(levelIndex) {
@@ -346,7 +366,6 @@
             goal.y = GOAL_HEIGHT / 2;
             
             gameState = 'PLAYING';
-            gameUI.style.display = 'flex';
             levelIndicator.textContent = `Problem ${currentLevel + 1}`;
             draw();
         }
@@ -359,10 +378,10 @@
         }
 
         function resizeCanvas() {
-            const container = document.getElementById('game-container');
+            const container = gameContainer;
             const aspectRatio = 16 / 9;
-            let newWidth = container.clientWidth;
-            let newHeight = container.clientHeight;
+            let newWidth = container.parentElement.clientWidth * 0.9;
+            let newHeight = container.parentElement.clientHeight * 0.9;
             
             if (newWidth / newHeight > aspectRatio) {
                 newWidth = newHeight * aspectRatio;
@@ -370,14 +389,12 @@
                 newHeight = newWidth / aspectRatio;
             }
 
-            canvas.width = 1000; // Fixed internal resolution
+            container.style.width = `${newWidth}px`;
+            container.style.height = `${newHeight}px`;
+
+            canvas.width = 1280; // Fixed internal resolution
             canvas.height = canvas.width / aspectRatio;
             
-            canvas.style.width = `${newWidth}px`;
-            canvas.style.height = `${newHeight}px`;
-
-            scale = canvas.width / newWidth;
-
             if (gameState === 'PLAYING' || gameState === 'ANIMATING') {
                 setupLevel(currentLevel);
             }
@@ -387,10 +404,10 @@
         // --- Drawing Functions ---
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            drawPitch();
+            // Pitch color is handled by CSS
+            drawPitchLines();
             drawGoal();
             
-            // Draw defender ranges if not animating
             if (gameState === 'PLAYING') {
                 defenders.forEach(d => drawPlayer(d, true));
             }
@@ -405,9 +422,8 @@
             drawPath();
         }
 
-        function drawPitch() {
-            // Field color is set by CSS
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+        function drawPitchLines() {
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
             ctx.lineWidth = 5;
 
             // Center circle
@@ -417,51 +433,79 @@
 
             // Penalty box
             const boxWidth = canvas.width * 0.4;
-            const boxHeight = canvas.height * 0.2;
+            const boxHeight = canvas.height * 0.25;
             ctx.strokeRect((canvas.width - boxWidth) / 2, 0, boxWidth, boxHeight);
         }
 
         function drawGoal() {
-            ctx.fillStyle = '#FFF';
-            ctx.strokeStyle = '#000';
-            ctx.lineWidth = 2;
+            ctx.fillStyle = 'rgba(0,0,0,0.2)';
+            ctx.strokeStyle = '#FFF';
+            ctx.lineWidth = 4;
             ctx.fillRect(goal.x - GOAL_WIDTH / 2, goal.y - GOAL_HEIGHT / 2, GOAL_WIDTH, GOAL_HEIGHT);
             ctx.strokeRect(goal.x - GOAL_WIDTH / 2, goal.y - GOAL_HEIGHT / 2, GOAL_WIDTH, GOAL_HEIGHT);
         }
 
         function drawPlayer(p, drawRange = false) {
+            ctx.save();
             if (drawRange) {
-                ctx.fillStyle = 'rgba(56, 161, 243, 0.15)';
+                ctx.fillStyle = 'rgba(59, 130, 246, 0.1)';
+                ctx.strokeStyle = 'rgba(59, 130, 246, 0.3)';
+                ctx.lineWidth = 1;
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.range, 0, 2 * Math.PI);
                 ctx.fill();
+                ctx.stroke();
             }
             
+            ctx.shadowColor = 'rgba(0,0,0,0.4)';
+            ctx.shadowBlur = 15;
+            ctx.shadowOffsetY = 8;
+            
+            const gradient = ctx.createRadialGradient(p.x - 5, p.y - 5, 2, p.x, p.y, PLAYER_RADIUS * 1.5);
+            if(p.isPlayer) {
+                gradient.addColorStop(0, '#f87171');
+                gradient.addColorStop(1, '#b91c1c');
+            } else {
+                gradient.addColorStop(0, '#60a5fa');
+                gradient.addColorStop(1, '#2563eb');
+            }
+
             ctx.beginPath();
             ctx.arc(p.x, p.y, PLAYER_RADIUS, 0, 2 * Math.PI);
-            ctx.fillStyle = p.isPlayer ? '#e53e3e' : '#3182ce';
+            ctx.fillStyle = gradient;
             ctx.fill();
-            ctx.strokeStyle = 'white';
-            ctx.lineWidth = 3;
+            
+            ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+            ctx.lineWidth = 2;
             ctx.stroke();
 
-            // Glow for ball holder
             if (p === ball.holder && (gameState === 'PLAYING' || gameState === 'ANIMATING')) {
                 ctx.shadowColor = 'white';
-                ctx.shadowBlur = 20;
-                ctx.fill();
-                ctx.shadowBlur = 0;
+                ctx.shadowBlur = 30;
+                ctx.shadowOffsetY = 0;
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+                ctx.lineWidth = 4;
+                ctx.stroke();
             }
+            ctx.restore();
         }
 
         function drawBall() {
+            ctx.save();
+            ctx.shadowColor = 'rgba(0,0,0,0.5)';
+            ctx.shadowBlur = 8;
+            ctx.shadowOffsetY = 4;
+            
+            const gradient = ctx.createRadialGradient(ball.x - 3, ball.y - 3, 1, ball.x, ball.y, BALL_RADIUS);
+            gradient.addColorStop(0, '#ffffff');
+            gradient.addColorStop(1, '#e0e0e0');
+
             ctx.beginPath();
             ctx.arc(ball.x, ball.y, BALL_RADIUS, 0, 2 * Math.PI);
-            ctx.fillStyle = 'white';
+            ctx.fillStyle = gradient;
             ctx.fill();
-            ctx.strokeStyle = 'black';
-            ctx.lineWidth = 2;
-            ctx.stroke();
+            
+            ctx.restore();
         }
 
         function drawPath() {
@@ -471,9 +515,10 @@
             for (let i = 1; i < currentPath.length; i++) {
                 ctx.lineTo(currentPath[i].x, currentPath[i].y);
             }
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
             ctx.lineWidth = 5;
-            ctx.setLineDash([15, 10]);
+            ctx.lineCap = 'round';
+            ctx.setLineDash([10, 10]);
             ctx.stroke();
             ctx.setLineDash([]);
         }
@@ -481,7 +526,7 @@
         // --- Mouse/Touch Interaction ---
         let isDrawing = false;
         
-        function getMousePos(evt) {
+        function getCanvasPos(evt) {
             const rect = canvas.getBoundingClientRect();
             const clientX = evt.clientX || (evt.touches && evt.touches[0].clientX);
             const clientY = evt.clientY || (evt.touches && evt.touches[0].clientY);
@@ -495,10 +540,10 @@
             e.preventDefault();
             if (gameState !== 'PLAYING' || !ball.holder) return;
 
-            const pos = getMousePos(e);
+            const pos = getCanvasPos(e);
             const dist = Math.hypot(pos.x - ball.holder.x, pos.y - ball.holder.y);
 
-            if (dist < PLAYER_RADIUS) {
+            if (dist < PLAYER_RADIUS * 1.5) {
                 isDrawing = true;
                 path = [{ x: ball.holder.x, y: ball.holder.y, player: ball.holder }];
                 currentPath = [pos];
@@ -508,12 +553,10 @@
         function handleMove(e) {
             e.preventDefault();
             if (!isDrawing) return;
-            const pos = getMousePos(e);
+            const pos = getCanvasPos(e);
             currentPath = [path[path.length - 1], pos];
 
-            // Snap to player
-            const allPlayers = [...players];
-            for (const p of allPlayers) {
+            for (const p of players) {
                 if (p === path[path.length - 1].player) continue;
                 const dist = Math.hypot(pos.x - p.x, pos.y - p.y);
                 if (dist < PLAYER_RADIUS * 2) {
@@ -529,35 +572,31 @@
             if (!isDrawing) return;
             isDrawing = false;
             
-            const pos = getMousePos(e);
+            const pos = getCanvasPos(e);
             let targetFound = false;
 
-            // Check if snapped to a player
             for (const p of players) {
                 if (p === path[path.length - 1].player) continue;
                 const dist = Math.hypot(pos.x - p.x, pos.y - p.y);
-                if (dist < PLAYER_RADIUS * 2) {
+                if (dist < PLAYER_RADIUS * 2.5) {
                     path.push({ x: p.x, y: p.y, player: p });
                     targetFound = true;
-                    // Start drawing again from the new player
                     isDrawing = true; 
                     currentPath = [];
                     draw();
-                    return; // Don't execute yet, continue drawing path
+                    return;
                 }
             }
 
-            // If not snapped, it must be a shot
-            // Check if the shot is towards goal
             if (pos.x > goal.x - GOAL_WIDTH / 2 && pos.x < goal.x + GOAL_WIDTH / 2 && pos.y < goal.y + GOAL_HEIGHT / 2 + 50) {
-                 path.push({ x: pos.x, y: 0, player: null }); // Target is the goal line
+                 path.push({ x: pos.x, y: 0, player: null });
                  targetFound = true;
             }
 
             if (targetFound) {
                 executePlay();
             } else {
-                path = []; // Invalid end point
+                path = [];
             }
             currentPath = [];
             draw();
@@ -571,16 +610,16 @@
             animationState = {
                 pathIndex: 0,
                 progress: 0,
-                ballSpeed: 15, // pixels per frame
+                ballSpeed: 20,
             };
-            
+            sounds.kick.triggerAttackRelease("C2", "8n");
             animate();
         }
 
         function animate() {
             if (gameState !== 'ANIMATING') return;
 
-            const { pathIndex, progress, ballSpeed } = animationState;
+            const { pathIndex, ballSpeed } = animationState;
             const startPoint = path[pathIndex];
             const endPoint = path[pathIndex + 1];
 
@@ -595,34 +634,30 @@
             ball.x = startPoint.x + dx * ratio;
             ball.y = startPoint.y + dy * ratio;
 
-            // Check for interception
             for (const d of defenders) {
                 const distToBall = Math.hypot(ball.x - d.x, ball.y - d.y);
-                if (distToBall < d.range) {
+                if (distToBall < d.range + BALL_RADIUS) {
                     levelLost();
                     return;
                 }
             }
             
             if (animationState.progress >= totalSteps) {
-                // Move to next segment
                 animationState.progress = 0;
                 animationState.pathIndex++;
 
                 if (animationState.pathIndex >= path.length - 1) {
-                    // End of path
-                    if (endPoint.player === null) { // It was a shot
+                    if (endPoint.player === null) {
                         if (ball.x > goal.x - GOAL_WIDTH / 2 && ball.x < goal.x + GOAL_WIDTH / 2) {
                             levelWon();
                         } else {
-                            levelLost(); // Missed shot
+                            levelLost();
                         }
                     } else {
-                       levelLost(); // Ended on a player, not a shot
+                       levelLost();
                     }
                     return;
                 } else {
-                    // Successful pass
                     ball.holder = endPoint.player;
                     sounds.kick.triggerAttackRelease("C3", "8n", Tone.now() + 0.01);
                 }
@@ -634,8 +669,9 @@
 
         function levelWon() {
             gameState = 'LEVEL_WON';
-            sounds.goal.triggerAttackRelease(["C4", "E4", "G4"], "0.5s");
+            sounds.goal.triggerAttackRelease(["C4", "E4", "G4", "C5"], "0.5s");
             goalCelebration.classList.add('active');
+            gameContainer.style.transform = 'scale(1.02)';
 
             if (!completedLevels.includes(currentLevel)) {
                 completedLevels.push(currentLevel);
@@ -645,6 +681,7 @@
 
             setTimeout(() => {
                 goalCelebration.classList.remove('active');
+                gameContainer.style.transform = 'scale(1)';
                 setupLevel(currentLevel + 1);
             }, 2000);
         }
@@ -653,21 +690,29 @@
             gameState = 'LEVEL_LOST';
             sounds.lose.triggerAttackRelease("0.2s");
             showMessage("Interception!", 2000);
+            gameContainer.style.transform = 'translateX(-2px)';
+            setTimeout(() => gameContainer.style.transform = 'translateX(2px)', 50);
+            setTimeout(() => gameContainer.style.transform = 'translateX(0)', 100);
             
             setTimeout(() => {
-                setupLevel(currentLevel);
+                if(gameState === 'LEVEL_LOST') setupLevel(currentLevel);
             }, 1500);
         }
 
         // --- UI & Screen Management ---
         function setupUI() {
             document.body.addEventListener('click', (e) => {
-                if(e.target.closest('.btn')) {
-                    sounds.uiClick.triggerAttackRelease("C5", "8n");
-                    // Start audio context on first user interaction
+                if (e.target.closest('.btn, .ui-btn, .level-btn')) {
                     if (Tone.context.state !== 'running') {
                         Tone.start();
                     }
+                    const clickSynth = new Tone.Synth({
+                        oscillator: { type: 'triangle' },
+                        envelope: { attack: 0.005, decay: 0.1, sustain: 0, release: 0.1 },
+                        volume: -20
+                    }).toDestination();
+                    clickSynth.triggerAttackRelease("C5", "0.1", Tone.now());
+                    setTimeout(() => clickSynth.dispose(), 200);
                 }
             });
 
@@ -686,7 +731,6 @@
             });
             
             document.getElementById('menu-btn').addEventListener('click', () => {
-                gameState = 'MENU';
                 switchScreen('mainMenu');
             });
             
@@ -729,11 +773,7 @@
                     userId = user.uid;
                     userProgressDocRef = doc(db, `artifacts/${appId}/users/${userId}/babilodzes_playbook/progress`);
                     await loadProgress();
-                    // Once progress is loaded, we can initialize the game
-                    setupUI();
-                    resizeCanvas();
                 } else {
-                    console.log("User not signed in, signing in anonymously.");
                     try {
                         if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                             await signInWithCustomToken(auth, __initial_auth_token);
@@ -741,27 +781,36 @@
                             await signInAnonymously(auth);
                         }
                     } catch (error) {
-                        console.error("Anonymous sign-in failed:", error);
-                        // Fallback for environments where sign-in might fail
-                        userId = 'local-user';
-                        setupUI();
-                        resizeCanvas();
+                        console.error("Sign-in failed, using local fallback:", error);
+                        userId = 'local-user-' + (localStorage.getItem('babilodzes_playbook_uuid') || crypto.randomUUID());
+                        localStorage.setItem('babilodzes_playbook_uuid', userId);
+                        await loadProgress();
                     }
                 }
+                setupUI();
+                resizeCanvas();
             });
         }
 
         async function loadProgress() {
+            if (userId.startsWith('local-user')) {
+                const localData = localStorage.getItem('babilodzes_playbook_progress');
+                if(localData) {
+                    const data = JSON.parse(localData);
+                    completedLevels = data.completedLevels || [];
+                    unlockedLevels = data.unlockedLevels || 1;
+                }
+                return;
+            }
             if (!userProgressDocRef) return;
+
             try {
                 const docSnap = await getDoc(userProgressDocRef);
                 if (docSnap.exists()) {
                     const data = docSnap.data();
                     completedLevels = data.completedLevels || [];
-                    unlockedLevels = Math.max(1, completedLevels.length + 1, data.unlockedLevels || 1);
-                    console.log("Progress loaded:", { completedLevels, unlockedLevels });
+                    unlockedLevels = Math.max(1, data.unlockedLevels || 1);
                 } else {
-                    console.log("No progress found, creating new document.");
                     await setDoc(userProgressDocRef, { completedLevels: [], unlockedLevels: 1 });
                 }
             } catch (error) {
@@ -770,20 +819,17 @@
         }
 
         async function saveProgress() {
+             if (userId.startsWith('local-user')) {
+                const progress = { completedLevels, unlockedLevels };
+                localStorage.setItem('babilodzes_playbook_progress', JSON.stringify(progress));
+                return;
+            }
             if (!userProgressDocRef) return;
+
             try {
-                await updateDoc(userProgressDocRef, {
-                    completedLevels: completedLevels,
-                    unlockedLevels: unlockedLevels
-                });
-                console.log("Progress saved.");
+                await setDoc(userProgressDocRef, { completedLevels, unlockedLevels });
             } catch (error) {
-                // If doc doesn't exist, create it
-                if (error.code === 'not-found') {
-                    await setDoc(userProgressDocRef, { completedLevels: completedLevels, unlockedLevels: unlockedLevels });
-                } else {
-                    console.error("Error saving progress:", error);
-                }
+                console.error("Error saving progress:", error);
             }
         }
 
@@ -791,13 +837,12 @@
         window.addEventListener('resize', resizeCanvas);
         canvas.addEventListener('mousedown', handleStart);
         canvas.addEventListener('mousemove', handleMove);
-        window.addEventListener('mouseup', handleEnd); // Use window to catch mouseup outside canvas
+        window.addEventListener('mouseup', handleEnd);
 
         canvas.addEventListener('touchstart', handleStart, { passive: false });
         canvas.addEventListener('touchmove', handleMove, { passive: false });
         window.addEventListener('touchend', handleEnd, { passive: false });
 
-        // Start the app
         authUser();
 
     </script>

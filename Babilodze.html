@@ -3,197 +3,568 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tamaz Babilodze - CV</title>
-    <!-- Tailwind CSS for styling -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Inter -->
+    <title>Tazo's Tactical Triumph</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Custom styles for a professional look and feel */
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f3f4f6; /* light gray background */
+            font-family: 'Press Start 2P', cursive;
+            background-color: #1a202c;
+            color: #e2e8f0;
+            overflow: hidden;
         }
-        /* Custom styles for printing */
-        @media print {
-            body {
-                background-color: #fff;
-            }
-            .cv-container {
-                box-shadow: none;
-                margin: 0;
-                max-width: 100%;
-                border: none;
-            }
-            .no-print {
-                display: none;
-            }
-            /* Ensure links are displayed properly when printed */
-            a::after {
-                content: " (" attr(href) ") ";
-                font-size: 0.8em;
-                color: #555;
-            }
-            a[href^="mailto:"]::after {
-                content: "";
-            }
+        canvas {
+            background-color: #2d3748;
+            cursor: crosshair;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .btn {
+            background-color: #4a5568;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            text-transform: uppercase;
+        }
+        .btn:hover {
+            background-color: #2d3748;
+            transform: translateY(-2px);
+        }
+        .btn:active {
+            transform: translateY(0);
+        }
+        .btn-play {
+            background-color: #38a169;
+        }
+        .btn-play:hover {
+            background-color: #2f855a;
+        }
+        .btn-reset {
+            background-color: #e53e3e;
+        }
+        .btn-reset:hover {
+            background-color: #c53030;
+        }
+        #modal {
+            transition: opacity 0.3s ease-in-out;
         }
     </style>
 </head>
-<body>
+<body class="flex flex-col items-center justify-center min-h-screen p-4">
 
-    <!-- Main CV Container -->
-    <div class="cv-container container mx-auto max-w-5xl bg-white my-8 sm:my-12 p-8 sm:p-12 shadow-2xl rounded-lg border border-gray-200">
-
-        <!-- Header Section -->
-        <header class="flex flex-col sm:flex-row justify-between items-start pb-6 mb-6 border-b-2 border-gray-100">
-            <div>
-                <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-800 tracking-tight">Tamaz Babilodze</h1>
-                <h2 class="text-xl sm:text-2xl font-light text-blue-600 mt-1">Physical Performance Coach (Football Fitness Coach)</h2>
-            </div>
-            <div class="text-sm sm:text-right text-gray-600 mt-4 sm:mt-0">
-                <div class="flex items-center justify-start sm:justify-end mb-2">
-                    <i class="fas fa-map-marker-alt w-5 text-center mr-2 text-blue-600"></i>
-                    <span>Tbilisi, Georgia</span>
-                </div>
-                <div class="flex items-center justify-start sm:justify-end mb-2">
-                    <i class="fas fa-envelope w-5 text-center mr-2 text-blue-600"></i>
-                    <a href="mailto:babilodze.info@gmail.com" class="hover:text-blue-700">babilodze.info@gmail.com</a>
-                </div>
-                <div class="flex items-center justify-start sm:justify-end mb-2">
-                    <i class="fab fa-linkedin w-5 text-center mr-2 text-blue-600"></i>
-                    <a href="#" class="hover:text-blue-700">LinkedIn Profile</a>
-                </div>
-                <div class="flex items-center justify-start sm:justify-end">
-                    <i class="fas fa-globe w-5 text-center mr-2 text-blue-600"></i>
-                    <a href="#" class="hover:text-blue-700">Personal Website</a>
-                </div>
-            </div>
-        </header>
-
-        <!-- Main Content -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-x-12">
-
-            <!-- Left Column: Experience & Education -->
-            <div class="lg:col-span-2">
-
-                <!-- Summary Section -->
-                <section id="summary" class="mb-8">
-                    <h3 class="text-2xl font-bold text-gray-800 mb-4 pb-2 border-b-2 border-blue-600">Summary</h3>
-                    <p class="text-gray-700 leading-relaxed">
-                        Highly accomplished and results-driven Physical Performance Coach with a demonstrated history of working in the elite sports industry, specifically football. Proven expertise in designing and implementing strength & conditioning programs, developing team and individual physical performance plans, re-adaptation (return to sport), and managing both short-term and long-term player workloads. A strong community and social services professional with a UEFA 'A' License, an MSc in Sport Management, and a BSc in Sport Science.
-                    </p>
-                </section>
-                
-                <!-- Experience Section -->
-                <section id="experience">
-                    <h3 class="text-2xl font-bold text-gray-800 mb-6 pb-2 border-b-2 border-blue-600">Experience</h3>
-                    
-                    <div class="relative mb-6 pl-6 before:absolute before:left-0 before:top-2 before:w-2 before:h-2 before:bg-blue-600 before:rounded-full">
-                        <p class="text-xs font-medium text-gray-500 uppercase">August 2022 – Present</p>
-                        <h4 class="text-lg font-semibold text-gray-800">Physical Performance Coach</h4>
-                        <p class="text-md text-gray-600">Georgian Football Federation – Tbilisi, Georgia</p>
-                        <ul class="list-disc list-inside mt-2 text-gray-700 space-y-1">
-                            <li>Responsible for developing and implementing physical performance strategies for national football teams.</li>
-                            <li>Assisted as Physical Performance Coach for the Georgian Futsal National Team.</li>
-                        </ul>
-                    </div>
-
-                    <div class="relative mb-6 pl-6 before:absolute before:left-0 before:top-2 before:w-2 before:h-2 before:bg-blue-600 before:rounded-full">
-                        <p class="text-xs font-medium text-gray-500 uppercase">January 2023 – June 2025</p>
-                        <h4 class="text-lg font-semibold text-gray-800">Physical Performance Coach</h4>
-                        <p class="text-md text-gray-600">FC Locomotive 1936 – Georgia</p>
-                        <ul class="list-disc list-inside mt-2 text-gray-700 space-y-1">
-                            <li>Designed and oversaw comprehensive, periodized strength and conditioning programs.</li>
-                            <li>Managed player workload using modern monitoring technologies to optimize performance.</li>
-                            <li>Implemented re-adaptation protocols for safe return to play after injuries.</li>
-                        </ul>
-                    </div>
-
-                    <div class="relative mb-6 pl-6 before:absolute before:left-0 before:top-2 before:w-2 before:h-2 before:bg-blue-600 before:rounded-full">
-                        <p class="text-xs font-medium text-gray-500 uppercase">February 2017 – October 2022</p>
-                        <h4 class="text-lg font-semibold text-gray-800">Physical Performance Coach</h4>
-                        <p class="text-md text-gray-600">FC Dinamo Tbilisi – Tbilisi, Georgia</p>
-                         <ul class="list-disc list-inside mt-2 text-gray-700 space-y-1">
-                            <li>Key contributor to player development through tailored physical training regimens.</li>
-                            <li>Supported team performance, contributing to achieving multiple league and cup titles.</li>
-                        </ul>
-                    </div>
-
-                    <div class="relative mb-6 pl-6 before:absolute before:left-0 before:top-2 before:w-2 before:h-2 before:bg-blue-600 before:rounded-full">
-                        <p class="text-xs font-medium text-gray-500 uppercase">January 2016 – February 2017</p>
-                        <h4 class="text-lg font-semibold text-gray-800">Coach</h4>
-                        <p class="text-md text-gray-600">Spain Football Academy in Kyiv – Kyiv, Ukraine</p>
-                    </div>
-                </section>
-
-                 <!-- Education Section -->
-                <section id="education" class="mt-8">
-                    <h3 class="text-2xl font-bold text-gray-800 mb-6 pb-2 border-b-2 border-blue-600">Education</h3>
-                    <div class="relative pl-6 before:absolute before:left-0 before:top-2 before:w-2 before:h-2 before:bg-blue-600 before:rounded-full">
-                        <p class="text-xs font-medium text-gray-500 uppercase">2011 – 2016</p>
-                        <h4 class="text-lg font-semibold text-gray-800">National University of Physical Training and Sports, Kyiv</h4>
-                        <p class="text-md text-gray-600">Master's degree, Sport and Fitness Administration/Management</p>
-                        <p class="text-md text-gray-600">Bachelor of Sport, Physical Education Teaching and Coaching</p>
-                    </div>
-                </section>
-                
-            </div>
-
-            <!-- Right Column: Skills, Certs, etc. -->
-            <div class="lg:col-span-1 mt-8 lg:mt-0">
-
-                <!-- Top Skills Section -->
-                <section id="skills" class="mb-8">
-                    <h3 class="text-xl font-bold text-gray-800 mb-4 pb-2 border-b">Top Skills</h3>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">Performance Analysis</span>
-                        <span class="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">Readaptation</span>
-                        <span class="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">Sports Management</span>
-                        <span class="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">Football Coaching</span>
-                        <span class="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">Strength & Conditioning</span>
-                        <span class="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">Workload Management</span>
-                    </div>
-                </section>
-
-                <!-- Certifications Section -->
-                <section id="certifications" class="mb-8">
-                    <h3 class="text-xl font-bold text-gray-800 mb-4 pb-2 border-b">Certifications</h3>
-                    <ul class="space-y-2 text-gray-700">
-                        <li class="flex items-center"><i class="fa-solid fa-award mr-3 text-blue-600"></i> UEFA A License</li>
-                        <li class="flex items-center"><i class="fa-solid fa-award mr-3 text-blue-600"></i> WIMU (EPTS) Technology - LEVEL 1</li>
-                        <li class="flex items-center"><i class="fa-solid fa-award mr-3 text-blue-600"></i> Functional Movement Screen (FMS)</li>
-                        <li class="flex items-center"><i class="fa-solid fa-award mr-3 text-blue-600"></i> "YBT" Y-balance screen</li>
-                    </ul>
-                </section>
-
-                 <!-- Honors & Awards Section -->
-                <section id="awards" class="mb-8">
-                    <h3 class="text-xl font-bold text-gray-800 mb-4 pb-2 border-b">Honors & Awards</h3>
-                    <ul class="space-y-2 text-gray-700">
-                        <li class="flex items-center"><i class="fa-solid fa-trophy mr-3 text-yellow-500"></i> Georgia Erovnuli Liga Champion</li>
-                        <li class="flex items-center"><i class="fa-solid fa-trophy mr-3 text-yellow-500"></i> Georgian Supercup Winner</li>
-                    </ul>
-                </section>
-
-                <!-- Languages Section -->
-                <section id="languages">
-                    <h3 class="text-xl font-bold text-gray-800 mb-4 pb-2 border-b">Languages</h3>
-                    <ul class="space-y-2 text-gray-700">
-                        <li><strong>Georgian:</strong> <span class="float-right">Native</span></li>
-                        <li><strong>Russian:</strong> <span class="float-right">Full Professional</span></li>
-                        <li><strong>Ukrainian:</strong> <span class="float-right">Professional Working</span></li>
-                        <li><strong>English:</strong> <span class="float-right">Professional Working</span></li>
-                    </ul>
-                </section>
-            </div>
-        </div>
-
+    <div class="text-center mb-4">
+        <h1 class="text-3xl md:text-4xl font-bold text-white">Tazo's Tactical Triumph</h1>
+        <p class="text-gray-400 mt-2">Draw the plays. Score the goal. Become a legend.</p>
+        <p id="level-display" class="text-xl text-yellow-400 mt-2">Level: 1</p>
     </div>
 
+    <canvas id="gameCanvas"></canvas>
+
+    <div class="flex space-x-4 mt-4">
+        <button id="playBtn" class="btn btn-play">Play</button>
+        <button id="clearBtn" class="btn">Clear Lines</button>
+        <button id="resetBtn" class="btn btn-reset">Reset Level</button>
+    </div>
+
+    <!-- Modal for messages -->
+    <div id="modal" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center hidden opacity-0">
+        <div class="bg-gray-800 p-8 rounded-lg shadow-2xl text-center max-w-sm mx-auto">
+            <h2 id="modal-title" class="text-3xl font-bold text-white mb-4">Goal!</h2>
+            <p id="modal-message" class="text-gray-300 mb-6">A tactical masterpiece!</p>
+            <button id="modal-button" class="btn btn-play">Next Level</button>
+        </div>
+    </div>
+
+
+    <script>
+        // --- Basic Setup ---
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // --- DOM Elements ---
+        const playBtn = document.getElementById('playBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const levelDisplay = document.getElementById('level-display');
+        const modal = document.getElementById('modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalMessage = document.getElementById('modal-message');
+        const modalButton = document.getElementById('modal-button');
+
+        // --- Game State ---
+        let gameState = 'drawing'; // 'drawing', 'playing', 'paused'
+        let players = [];
+        let opponents = [];
+        let ball;
+        let selectedPlayer = null;
+        let lines = [];
+        let currentLevel = 0;
+        let tazo = { x: 50, y: 0, frame: 0, direction: 1 };
+
+
+        // --- Game Configuration ---
+        const config = {
+            playerRadius: 15,
+            ballRadius: 8,
+            goalWidth: 100,
+            goalHeight: 20,
+            friction: 0.985,
+            playerSpeed: 2,
+            opponentSpeed: 1.5,
+            shotPower: 10,
+        };
+
+        // --- Level Definitions ---
+        const levels = [
+            { // Level 1: Simple pass and shoot
+                players: [{ x: 300, y: 400 }],
+                opponents: [{ x: 400, y: 250 }],
+                ball: { x: 300, y: 450 }
+            },
+            { // Level 2: Pass around one defender
+                players: [{ x: 200, y: 300 }, { x: 600, y: 300 }],
+                opponents: [{ x: 400, y: 200 }],
+                ball: { x: 200, y: 350 }
+            },
+            { // Level 3: Two defenders
+                players: [{ x: 150, y: 400 }, { x: 400, y: 250 }],
+                opponents: [{ x: 300, y: 150 }, { x: 500, y: 300 }],
+                ball: { x: 150, y: 450 }
+            },
+            { // Level 4: A more complex setup
+                players: [{ x: 100, y: 250 }, { x: 300, y: 450 }, {x: 500, y: 250}],
+                opponents: [{ x: 250, y: 180 }, { x: 450, y: 350 }, {x: 650, y: 200}],
+                ball: { x: 300, y: 500 }
+            },
+            { // Level 5: The Final Challenge
+                players: [{ x: 200, y: 500 }, { x: 400, y: 300 }, {x: 600, y: 500}],
+                opponents: [{ x: 250, y: 200 }, { x: 400, y: 150 }, {x: 550, y: 200}, {x: 400, y: 400}],
+                ball: { x: 400, y: 550 }
+            }
+        ];
+
+        // --- Utility Classes ---
+        class Entity {
+            constructor(x, y, radius, color) {
+                this.x = x;
+                this.y = y;
+                this.startX = x;
+                this.startY = y;
+                this.radius = radius;
+                this.color = color;
+                this.vx = 0;
+                this.vy = 0;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+
+            reset() {
+                this.x = this.startX;
+                this.y = this.startY;
+                this.vx = 0;
+                this.vy = 0;
+            }
+        }
+
+        class Player extends Entity {
+            constructor(x, y) {
+                super(x, y, config.playerRadius, '#3182ce'); // Blue team
+                this.path = null;
+                this.targetIndex = 0;
+            }
+
+            setPath(path) {
+                this.path = path;
+                this.targetIndex = 0;
+            }
+
+            update() {
+                if (gameState !== 'playing' || !this.path || this.targetIndex >= this.path.length) return;
+                
+                const target = this.path[this.targetIndex];
+                const dx = target.x - this.x;
+                const dy = target.y - this.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < config.playerSpeed) {
+                    this.targetIndex++;
+                } else {
+                    this.x += (dx / dist) * config.playerSpeed;
+                    this.y += (dy / dist) * config.playerSpeed;
+                }
+            }
+            
+            reset() {
+                super.reset();
+                this.path = null;
+                this.targetIndex = 0;
+            }
+        }
+
+        class Opponent extends Entity {
+            constructor(x, y) {
+                super(x, y, config.playerRadius, '#c53030'); // Red team
+            }
+
+            update() {
+                if (gameState !== 'playing') return;
+                // Simple AI: move towards the ball
+                const dx = ball.x - this.x;
+                const dy = ball.y - this.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist > this.radius + ball.radius) {
+                     this.x += (dx / dist) * config.opponentSpeed;
+                     this.y += (dy / dist) * config.opponentSpeed;
+                }
+            }
+        }
+
+        class Ball extends Entity {
+            constructor(x, y) {
+                super(x, y, config.ballRadius, '#f7fafc'); // White ball
+            }
+
+            update() {
+                if (gameState !== 'playing') return;
+                this.x += this.vx;
+                this.y += this.vy;
+                this.vx *= config.friction;
+                this.vy *= config.friction;
+
+                // Wall collisions
+                if (this.x - this.radius < 0 || this.x + this.radius > canvas.width) {
+                    this.vx *= -1;
+                    this.x = Math.max(this.radius, Math.min(canvas.width - this.radius, this.x));
+                }
+                if (this.y - this.radius < 0 || this.y + this.radius > canvas.height) {
+                    this.vy *= -1;
+                    this.y = Math.max(this.radius, Math.min(canvas.height - this.radius, this.y));
+                }
+            }
+        }
+        
+        // --- Core Functions ---
+        
+        function resizeCanvas() {
+            const maxWidth = 800;
+            const maxHeight = 600;
+            const aspectRatio = maxWidth / maxHeight;
+            
+            let newWidth = window.innerWidth * 0.9;
+            let newHeight = window.innerHeight * 0.7;
+
+            if (newWidth / newHeight > aspectRatio) {
+                newWidth = newHeight * aspectRatio;
+            } else {
+                newHeight = newWidth / aspectRatio;
+            }
+
+            canvas.width = Math.min(newWidth, maxWidth);
+            canvas.height = Math.min(newHeight, maxHeight);
+            
+            tazo.y = canvas.height - 60;
+            
+            draw(); // Redraw after resize
+        }
+
+        function loadLevel(levelIndex) {
+            if (levelIndex >= levels.length) {
+                showModal("You are a Legend!", "You've beaten all levels!", "Play Again");
+                currentLevel = 0; // Reset to first level
+                levelIndex = 0;
+            }
+            
+            const levelData = levels[levelIndex];
+            
+            players = levelData.players.map(p => new Player(p.x, p.y));
+            opponents = levelData.opponents.map(o => new Opponent(o.x, o.y));
+            ball = new Ball(levelData.ball.x, levelData.ball.y);
+            
+            lines = [];
+            gameState = 'drawing';
+            levelDisplay.textContent = `Level: ${levelIndex + 1}`;
+            draw();
+        }
+        
+        function drawField() {
+            // Main field
+            ctx.fillStyle = '#48bb78'; // Green
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Center circle
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(canvas.width / 2, canvas.height / 2, 75, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // Center line
+            ctx.beginPath();
+            ctx.moveTo(canvas.width / 2, 0);
+            ctx.lineTo(canvas.width / 2, canvas.height);
+            ctx.stroke();
+
+            // Goals
+            const goalY = 0;
+            const goalX = (canvas.width - config.goalWidth) / 2;
+            ctx.fillStyle = 'rgba(0,0,0,0.2)';
+            ctx.fillRect(goalX, goalY, config.goalWidth, config.goalHeight);
+            ctx.strokeStyle = '#f7fafc';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(goalX, goalY, config.goalWidth, config.goalHeight);
+        }
+
+        function drawLines() {
+            lines.forEach(line => {
+                ctx.beginPath();
+                ctx.moveTo(line.player.x, line.player.y);
+                line.path.forEach(point => {
+                    ctx.lineTo(point.x, point.y);
+                });
+                ctx.strokeStyle = 'rgba(255, 255, 0, 0.7)';
+                ctx.lineWidth = 3;
+                ctx.setLineDash([5, 5]);
+                ctx.stroke();
+                ctx.setLineDash([]); // Reset
+                
+                // Draw endpoint circle
+                if (line.path.length > 0) {
+                    const endPoint = line.path[line.path.length - 1];
+                    ctx.beginPath();
+                    ctx.arc(endPoint.x, endPoint.y, 5, 0, Math.PI * 2);
+                    ctx.fillStyle = 'yellow';
+                    ctx.fill();
+                }
+            });
+        }
+
+        function drawTazo() {
+            // Simple sprite animation for Tazo
+            const coachSize = 40;
+            ctx.fillStyle = "#e2e8f0"; // Coach color
+            ctx.fillRect(tazo.x, tazo.y, 20, coachSize); // Body
+            ctx.beginPath();
+            ctx.arc(tazo.x + 10, tazo.y - 10, 10, 0, Math.PI * 2); // Head
+            ctx.fill();
+
+            // Pacing animation
+            if (gameState === 'playing') {
+                tazo.x += tazo.direction * 0.5;
+                if (tazo.x > 150 || tazo.x < 50) {
+                    tazo.direction *= -1;
+                }
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawField();
+            
+            players.forEach(p => p.draw());
+            opponents.forEach(o => o.draw());
+            ball.draw();
+            
+            drawLines(); // Draw lines on top of players but under the selected highlight
+            drawTazo();
+
+            if (selectedPlayer) {
+                ctx.beginPath();
+                ctx.arc(selectedPlayer.x, selectedPlayer.y, config.playerRadius + 4, 0, Math.PI * 2);
+                ctx.strokeStyle = 'yellow';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            }
+        }
+        
+        function update() {
+            if (gameState !== 'playing') return;
+
+            players.forEach(p => p.update());
+            opponents.forEach(o => o.update());
+            ball.update();
+            
+            handleCollisions();
+            checkGoal();
+        }
+        
+        function handleCollisions() {
+            const allPlayers = [...players, ...opponents];
+            
+            allPlayers.forEach(player => {
+                const dx = ball.x - player.x;
+                const dy = ball.y - player.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < player.radius + ball.radius) {
+                    // Player has the ball
+                    if (player instanceof Player) {
+                        // If player is still moving, they dribble
+                        if(player.path && player.targetIndex < player.path.length) {
+                             ball.x = player.x + (dx / dist) * (player.radius + ball.radius);
+                             ball.y = player.y + (dy / dist) * (player.radius + ball.radius);
+                             ball.vx = (player.x - ball.x) * 0.2;
+                             ball.vy = (player.y - ball.y) * 0.2;
+                        } else { // Player has stopped, so they shoot/pass
+                            const line = lines.find(l => l.player === player);
+                            if(line && line.path.length > 0) {
+                                const target = line.path.slice(-1)[0];
+                                const shootDx = target.x - ball.x;
+                                const shootDy = target.y - ball.y;
+                                const shootDist = Math.sqrt(shootDx*shootDx + shootDy*shootDy);
+                                if (shootDist > 1) {
+                                    ball.vx = (shootDx / shootDist) * config.shotPower;
+                                    ball.vy = (shootDy / shootDist) * config.shotPower;
+                                }
+                                // Invalidate the line so it's a one-time shot
+                                line.path = []; 
+                            }
+                        }
+                    } else { // Opponent takes the ball
+                        ball.vx = (ball.x - player.x) * 0.1;
+                        ball.vy = (ball.y - player.y) * 0.1;
+                        setTimeout(() => {
+                            if(gameState === 'playing') { // Only show if game is still active
+                                showModal("Turnover!", "The opponent took the ball. Try again.", "Reset Level");
+                                gameState = 'paused';
+                            }
+                        }, 500);
+                    }
+                }
+            });
+        }
+        
+        function checkGoal() {
+            const goalX = (canvas.width - config.goalWidth) / 2;
+            if (ball.y - ball.radius < config.goalHeight && ball.x > goalX && ball.x < goalX + config.goalWidth) {
+                if (gameState === 'playing') {
+                    gameState = 'paused';
+                    currentLevel++;
+                    showModal("GOOOOAL!", "A tactical masterpiece!", currentLevel >= levels.length ? "Play Again" : "Next Level");
+                }
+            }
+        }
+        
+        function gameLoop() {
+            update();
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+
+        // --- Event Handlers ---
+        function handleMouseDown(e) {
+            if (gameState !== 'drawing') return;
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+
+            for (const player of players) {
+                const dx = mouseX - player.x;
+                const dy = mouseY - player.y;
+                if (Math.sqrt(dx * dx + dy * dy) < player.radius) {
+                    selectedPlayer = player;
+                    // Remove existing line for this player and start a new one
+                    lines = lines.filter(line => line.player !== selectedPlayer);
+                    lines.push({ player: selectedPlayer, path: [] });
+                    break;
+                }
+            }
+        }
+
+        function handleMouseMove(e) {
+            if (!selectedPlayer || gameState !== 'drawing') return;
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+            
+            const currentLine = lines.find(line => line.player === selectedPlayer);
+            if(currentLine) {
+                 // The path is just a single point, the destination
+                 currentLine.path = [{x: mouseX, y: mouseY}];
+            }
+        }
+
+        function handleMouseUp() {
+            selectedPlayer = null;
+        }
+
+        playBtn.addEventListener('click', () => {
+            if (gameState === 'drawing' && lines.some(l => l.path.length > 0)) {
+                lines.forEach(line => {
+                    const player = line.player;
+                    if (line.path.length > 0) {
+                        player.setPath(line.path);
+                    }
+                });
+                gameState = 'playing';
+            }
+        });
+
+        clearBtn.addEventListener('click', () => {
+            if (gameState === 'drawing') {
+                lines = [];
+                draw(); // Redraw to show cleared lines
+            }
+        });
+
+        resetBtn.addEventListener('click', () => {
+            resetLevel();
+        });
+        
+        function resetLevel() {
+            gameState = 'drawing';
+            loadLevel(currentLevel); // Reload the current level's data
+        }
+
+        function showModal(title, message, buttonText) {
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+            modalButton.textContent = buttonText;
+            modal.classList.remove('hidden');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        }
+
+        modalButton.addEventListener('click', () => {
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+
+            if (modalButton.textContent.includes('Next')) {
+                loadLevel(currentLevel);
+            } else { // Reset or Play Again
+                if (modalButton.textContent.includes('Again')) {
+                    currentLevel = 0;
+                }
+                loadLevel(currentLevel);
+            }
+        });
+
+        // --- Initialization ---
+        window.addEventListener('resize', resizeCanvas);
+        canvas.addEventListener('mousedown', handleMouseDown);
+        canvas.addEventListener('mousemove', handleMouseMove);
+        canvas.addEventListener('mouseup', handleMouseUp);
+        canvas.addEventListener('mouseleave', handleMouseUp); // End line if mouse leaves canvas
+
+        // Initial setup
+        loadLevel(currentLevel); // Load level data first
+        resizeCanvas(); // Then size the canvas, which calls draw
+        gameLoop();
+
+    </script>
 </body>
 </html>
